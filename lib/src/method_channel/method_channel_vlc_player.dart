@@ -26,8 +26,7 @@ class MethodChannelVlcPlayer extends VlcPlayerPlatform {
   }
 
   @override
-  Future<void> create({
-    required int viewId,
+  Future<int> create({
     required String uri,
     required DataSourceType type,
     String? package,
@@ -36,7 +35,7 @@ class MethodChannelVlcPlayer extends VlcPlayerPlatform {
     VlcPlayerOptions? options,
   }) async {
     final message = CreateMessage();
-    message.viewId = viewId;
+    message.viewId = null;
     message.uri = uri;
     message.type = type.index;
     message.packageName = package;
@@ -61,17 +60,13 @@ class MethodChannelVlcPlayer extends VlcPlayerPlatform {
   /// The `virtualDisplay` specifies whether Virtual displays or Hybrid composition is used on Android.
   /// iOS only uses Hybrid composition.
   @override
-  Widget buildView(
-    PlatformViewCreatedCallback onPlatformViewCreated, {
-    bool virtualDisplay = true,
-  }) {
+  Widget buildView(int? textureId, {bool virtualDisplay = true}) {
     const viewType = 'flutter_video_plugin/getVideoView';
     if (Platform.isAndroid) {
       return virtualDisplay
           ? AndroidView(
             viewType: viewType,
             hitTestBehavior: PlatformViewHitTestBehavior.transparent,
-            onPlatformViewCreated: onPlatformViewCreated,
             creationParamsCodec: const StandardMessageCodec(),
           )
           : PlatformViewLink(
@@ -94,14 +89,12 @@ class MethodChannelVlcPlayer extends VlcPlayerPlatform {
                   creationParamsCodec: const StandardMessageCodec(),
                 )
                 ..addOnPlatformViewCreatedListener(params.onPlatformViewCreated)
-                ..addOnPlatformViewCreatedListener(onPlatformViewCreated)
                 ..create();
             },
           );
     } else if (Platform.isIOS) {
       return UiKitView(
         viewType: viewType,
-        onPlatformViewCreated: onPlatformViewCreated,
         hitTestBehavior: PlatformViewHitTestBehavior.transparent,
         creationParamsCodec: const StandardMessageCodec(),
       );
@@ -501,6 +494,7 @@ class MethodChannelVlcPlayer extends VlcPlayerPlatform {
   }
 
   String base64Encode(List<int> value) => base64.encode(value);
+
   Uint8List base64Decode(String source) => base64.decode(source);
 
   @override

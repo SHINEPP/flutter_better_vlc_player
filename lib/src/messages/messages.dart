@@ -645,7 +645,7 @@ class VlcPlayerApi {
     }
   }
 
-  Future<void> create(CreateMessage arg) async {
+  Future<int> create(CreateMessage arg) async {
     final Object encoded = arg.encode();
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
       'dev.flutter.pigeon.VlcPlayerApi.create',
@@ -668,6 +668,8 @@ class VlcPlayerApi {
         message: error['message'] as String?,
         details: error['details'],
       );
+    } else {
+      return CreateMessage.decode(replyMap['result']!).viewId!;
     }
   }
 

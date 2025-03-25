@@ -38,6 +38,7 @@ class VlcPlayerState extends State<VlcPlayer> {
 
   //ignore: avoid_late_keyword
   late VoidCallback _listener;
+  int? _textureId;
 
   VlcPlayerState() {
     _listener = () {
@@ -49,6 +50,13 @@ class VlcPlayerState extends State<VlcPlayer> {
           _isInitialized = isInitialized;
         });
       }
+
+      final int? newTextureId = widget.controller.viewId;
+      if (newTextureId != _textureId) {
+        setState(() {
+          _textureId = newTextureId;
+        });
+      }
     };
   }
 
@@ -56,6 +64,7 @@ class VlcPlayerState extends State<VlcPlayer> {
   void initState() {
     super.initState();
     _isInitialized = widget.controller.value.isInitialized;
+    _textureId = widget.controller.viewId;
     // Need to listen for initialization events since the actual initialization value
     // becomes available after asynchronous initialization finishes.
     widget.controller.addListener(_listener);
@@ -73,10 +82,13 @@ class VlcPlayerState extends State<VlcPlayer> {
           ),
           Offstage(
             offstage: !_isInitialized,
-            child: vlcPlayerPlatform.buildView(
-              widget.controller.onPlatformViewCreated,
-              virtualDisplay: widget.virtualDisplay,
-            ),
+            child:
+                _textureId != null
+                    ? vlcPlayerPlatform.buildView(
+                      _textureId,
+                      virtualDisplay: widget.virtualDisplay,
+                    )
+                    : Container(),
           ),
         ],
       ),
@@ -89,6 +101,7 @@ class VlcPlayerState extends State<VlcPlayer> {
     if (oldWidget.controller != widget.controller) {
       oldWidget.controller.removeListener(_listener);
       _isInitialized = widget.controller.value.isInitialized;
+      _textureId = widget.controller.viewId;
       widget.controller.addListener(_listener);
     }
   }

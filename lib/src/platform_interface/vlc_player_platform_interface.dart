@@ -34,10 +34,7 @@ abstract class VlcPlayerPlatform extends PlatformInterface {
 
   // ignore: avoid_returning_widgets
   /// Returns a widget displaying the video.
-  Widget buildView(
-    PlatformViewCreatedCallback onPlatformViewCreated, {
-    bool virtualDisplay = true,
-  }) {
+  Widget buildView(int? textureId, {bool virtualDisplay = true}) {
     throw _unimplemented('buildView');
   }
 
@@ -55,8 +52,7 @@ abstract class VlcPlayerPlatform extends PlatformInterface {
   }
 
   /// Creates an instance of a vlc player
-  Future<void> create({
-    required int viewId,
+  Future<int> create({
     required String uri,
     required DataSourceType type,
     String? package,
