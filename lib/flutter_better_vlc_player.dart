@@ -1,6 +1,8 @@
+export 'src/better_vlc_player.dart' show VlcPlayer;
 export 'src/enums/data_source_type.dart';
 export 'src/enums/hardware_acceleration.dart';
 export 'src/enums/media_event_type.dart';
+export 'src/enums/playing_state.dart' show PlayingState;
 export 'src/enums/renderer_event_type.dart';
 export 'src/enums/subtitles/vlc_subtitle_text_direction.dart';
 export 'src/events/media_event.dart';
@@ -16,28 +18,5 @@ export 'src/utils/options/vlc_rtp_options.dart';
 export 'src/utils/options/vlc_stream_output_options.dart';
 export 'src/utils/options/vlc_subtitle_options.dart';
 export 'src/utils/options/vlc_video_options.dart';
-
-export 'package:flutter_better_vlc_player/flutter_better_vlc_player.dart'
-    show
-        HwAcc,
-        VlcMediaEvent,
-        VlcMediaEventType,
-        VlcRendererEvent,
-        VlcRendererEventType,
-        VlcSubtitleColor,
-        VlcSubtitleThickness,
-        VlcSubtitleTextDirection,
-        DataSourceType,
-        VlcPlayerOptions,
-        VlcAdvancedOptions,
-        VlcAudioOptions,
-        VlcHttpOptions,
-        VlcRtpOptions,
-        VlcStreamOutputOptions,
-        VlcVideoOptions,
-        VlcSubtitleOptions;
-
-export 'src/enums/playing_state.dart' show PlayingState;
-export 'src/flutter_vlc_player.dart' show VlcPlayer;
 export 'src/vlc_player_controller.dart' show VlcPlayerController;
 export 'src/vlc_player_value.dart' show VlcPlayerValue;

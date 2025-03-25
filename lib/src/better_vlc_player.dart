@@ -30,16 +30,16 @@ class VlcPlayer extends StatefulWidget {
   });
 
   @override
-  _VlcPlayerState createState() => _VlcPlayerState();
+  VlcPlayerState createState() => VlcPlayerState();
 }
 
-class _VlcPlayerState extends State<VlcPlayer> {
+class VlcPlayerState extends State<VlcPlayer> {
   bool _isInitialized = false;
 
   //ignore: avoid_late_keyword
   late VoidCallback _listener;
 
-  _VlcPlayerState() {
+  VlcPlayerState() {
     _listener = () {
       if (!mounted) return;
       //
