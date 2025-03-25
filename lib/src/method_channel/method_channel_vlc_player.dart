@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_better_vlc_player/flutter_vlc_player_platform_interface.dart';
+import 'package:flutter_better_vlc_player/flutter_better_vlc_player.dart';
 import 'package:flutter_better_vlc_player/src/messages/messages.dart';
 
 /// An implementation of [VlcPlayerPlatform] that uses method channels.

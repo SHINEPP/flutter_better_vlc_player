@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_better_vlc_player/flutter_vlc_player_platform_interface.dart';
+import 'package:flutter_better_vlc_player/flutter_better_vlc_player.dart';
 import 'package:flutter_better_vlc_player/src/method_channel/method_channel_vlc_player.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
