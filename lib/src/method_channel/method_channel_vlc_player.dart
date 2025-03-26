@@ -60,38 +60,10 @@ class MethodChannelVlcPlayer extends VlcPlayerPlatform {
   /// The `virtualDisplay` specifies whether Virtual displays or Hybrid composition is used on Android.
   /// iOS only uses Hybrid composition.
   @override
-  Widget buildView(int? textureId, {bool virtualDisplay = true}) {
+  Widget buildView(int textureId, {bool virtualDisplay = true}) {
     const viewType = 'flutter_video_plugin/getVideoView';
     if (Platform.isAndroid) {
-      return virtualDisplay
-          ? AndroidView(
-            viewType: viewType,
-            hitTestBehavior: PlatformViewHitTestBehavior.transparent,
-            creationParamsCodec: const StandardMessageCodec(),
-          )
-          : PlatformViewLink(
-            viewType: viewType,
-            surfaceFactory: (
-              BuildContext _,
-              PlatformViewController controller,
-            ) {
-              return AndroidViewSurface(
-                controller: controller as AndroidViewController,
-                gestureRecognizers: const {},
-                hitTestBehavior: PlatformViewHitTestBehavior.transparent,
-              );
-            },
-            onCreatePlatformView: (PlatformViewCreationParams params) {
-              return PlatformViewsService.initSurfaceAndroidView(
-                  id: params.id,
-                  viewType: viewType,
-                  layoutDirection: TextDirection.ltr,
-                  creationParamsCodec: const StandardMessageCodec(),
-                )
-                ..addOnPlatformViewCreatedListener(params.onPlatformViewCreated)
-                ..create();
-            },
-          );
+      return Texture(textureId: textureId);
     } else if (Platform.isIOS) {
       return UiKitView(
         viewType: viewType,

@@ -10,35 +10,22 @@ import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 
 public class FlutterVlcPlayerPlugin implements FlutterPlugin, ActivityAware {
 
-    private static final String VIEW_TYPE = "flutter_video_plugin/getVideoView";
-
-    private static FlutterVlcPlayerFactory playerFactory;
-    private FlutterPluginBinding pluginBinding;
+    private FlutterVlcPlayerBuilder playerBuilder;
 
     public FlutterVlcPlayerPlugin() {
     }
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding binding) {
-        pluginBinding = binding;
-
-        if (playerFactory == null) {
+        if (playerBuilder == null) {
             final FlutterInjector injector = FlutterInjector.instance();
-            playerFactory = new FlutterVlcPlayerFactory(
-                    pluginBinding.getBinaryMessenger(),
-                    pluginBinding.getTextureRegistry(),
+            playerBuilder = new FlutterVlcPlayerBuilder(binding.getApplicationContext(),
+                    binding.getBinaryMessenger(),
+                    binding.getTextureRegistry(),
                     injector.flutterLoader()::getLookupKeyForAsset,
                     injector.flutterLoader()::getLookupKeyForAsset);
-            pluginBinding.getPlatformViewRegistry()
-                    .registerViewFactory(VIEW_TYPE, playerFactory);
         }
-        startListening();
-    }
-
-    @Override
-    public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
-        stopListening();
-        pluginBinding = null;
+        playerBuilder.startListening();
     }
 
     @Override
@@ -46,27 +33,22 @@ public class FlutterVlcPlayerPlugin implements FlutterPlugin, ActivityAware {
     }
 
     @Override
-    public void onDetachedFromActivityForConfigChanges() {
+    public void onReattachedToActivityForConfigChanges(@NonNull ActivityPluginBinding binding) {
     }
 
     @Override
-    public void onReattachedToActivityForConfigChanges(@NonNull ActivityPluginBinding binding) {
+    public void onDetachedFromActivityForConfigChanges() {
     }
 
     @Override
     public void onDetachedFromActivity() {
     }
 
-    private static void startListening() {
-        if (playerFactory != null) {
-            playerFactory.startListening();
-        }
-    }
-
-    private static void stopListening() {
-        if (playerFactory != null) {
-            playerFactory.stopListening();
-            playerFactory = null;
+    @Override
+    public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
+        if (playerBuilder != null) {
+            playerBuilder.stopListening();
+            playerBuilder = null;
         }
     }
 }

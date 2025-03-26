@@ -36,8 +36,8 @@ flutter:
   plugin:
     platforms:
       android:
-        package: com.shinezzl.flutter_better_vlc_player
-        pluginClass: FlutterBetterVlcPlayerPlugin
+        package: com.shinezzl.bettervlcplayer
+        pluginClass: FlutterVlcPlayerPlugin
       ios:
         pluginClass: FlutterBetterVlcPlayerPlugin
 

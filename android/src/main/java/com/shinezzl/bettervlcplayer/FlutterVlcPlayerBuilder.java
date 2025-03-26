@@ -12,25 +12,43 @@ import io.flutter.view.TextureRegistry;
 
 public class FlutterVlcPlayerBuilder implements Messages.VlcPlayerApi {
 
-    private final LongSparseArray<FlutterVlcPlayer> vlcPlayers = new LongSparseArray<>();
-    private FlutterVlcPlayerFactory.KeyForAssetFn keyForAsset;
-    private FlutterVlcPlayerFactory.KeyForAssetAndPackageName keyForAssetAndPackageName;
+    public interface KeyForAssetFn {
+        String get(String asset);
+    }
 
-    void startListening(BinaryMessenger messenger) {
+    public interface KeyForAssetAndPackageName {
+        String get(String asset, String packageName);
+    }
+
+    private final LongSparseArray<FlutterVlcPlayer> vlcPlayers = new LongSparseArray<>();
+
+    private final Context context;
+    private final BinaryMessenger messenger;
+    private final TextureRegistry textureRegistry;
+    private final KeyForAssetFn keyForAsset;
+    private final KeyForAssetAndPackageName keyForAssetAndPackageName;
+
+    FlutterVlcPlayerBuilder(Context context, BinaryMessenger messenger, TextureRegistry textureRegistry, KeyForAssetFn keyForAsset, KeyForAssetAndPackageName keyForAssetAndPackageName) {
+        this.context = context;
+        this.messenger = messenger;
+        this.textureRegistry = textureRegistry;
+        this.keyForAsset = keyForAsset;
+        this.keyForAssetAndPackageName = keyForAssetAndPackageName;
+    }
+
+    void startListening() {
         Messages.VlcPlayerApi.setup(messenger, this);
     }
 
-    void stopListening(BinaryMessenger messenger) {
+    void stopListening() {
         // disposeAllPlayers();
         Messages.VlcPlayerApi.setup(messenger, null);
     }
 
-    FlutterVlcPlayer build(int viewId, Context context, BinaryMessenger binaryMessenger, TextureRegistry textureRegistry, FlutterVlcPlayerFactory.KeyForAssetFn keyForAsset, FlutterVlcPlayerFactory.KeyForAssetAndPackageName keyForAssetAndPackageName) {
-        this.keyForAsset = keyForAsset;
-        this.keyForAssetAndPackageName = keyForAssetAndPackageName;
-        // only create view for player and attach channel events
-        FlutterVlcPlayer vlcPlayer = new FlutterVlcPlayer(viewId, context, binaryMessenger, textureRegistry);
-        vlcPlayers.append(viewId, vlcPlayer);
+    FlutterVlcPlayer build() {
+        TextureRegistry.SurfaceTextureEntry texture = textureRegistry.createSurfaceTexture();
+        FlutterVlcPlayer vlcPlayer = new FlutterVlcPlayer(context, texture, messenger);
+        vlcPlayers.append(texture.id(), vlcPlayer);
         return vlcPlayer;
     }
 
@@ -39,7 +57,6 @@ public class FlutterVlcPlayerBuilder implements Messages.VlcPlayerApi {
             vlcPlayers.valueAt(i).dispose();
         }
         vlcPlayers.clear();
-
     }
 
     @Override

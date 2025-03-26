@@ -1,4 +1,4 @@
-package com.shinezzl.flutter_better_vlc_player_example
+package com.shinezzl.bettervlcplayer.example
 
 import io.flutter.embedding.android.FlutterActivity
 

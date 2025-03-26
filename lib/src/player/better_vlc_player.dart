@@ -85,7 +85,7 @@ class VlcPlayerState extends State<VlcPlayer> {
             child:
                 _textureId != null
                     ? vlcPlayerPlatform.buildView(
-                      _textureId,
+                      _textureId!,
                       virtualDisplay: widget.virtualDisplay,
                     )
                     : Container(),
