@@ -42,8 +42,8 @@ class MethodChannelVlcPlayer extends VlcPlayerPlatform {
     message.hwAcc = hwAcc?.index;
     message.autoPlay = autoPlay ?? true;
     message.options = options?.get() ?? [];
-
-    return _api.create(message);
+    final response = await _api.create(message);
+    return response.result!;
   }
 
   // ignore: proper_super_calls
@@ -229,7 +229,6 @@ class MethodChannelVlcPlayer extends VlcPlayerPlatform {
   @override
   Future<bool?> isPlaying(int viewId) async {
     final response = await _api.isPlaying(ViewMessage()..viewId = viewId);
-
     return response.result;
   }
 
