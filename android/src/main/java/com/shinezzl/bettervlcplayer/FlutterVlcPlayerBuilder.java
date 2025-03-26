@@ -80,10 +80,12 @@ public class FlutterVlcPlayerBuilder implements Messages.VlcPlayerApi {
         boolean isAssetUrl;
         if (arg.getType() == DataSourceType.ASSET.getNumericType()) {
             String assetLookupKey;
-            if (arg.getPackageName() != null)
+            if (arg.getPackageName() != null) {
                 assetLookupKey = keyForAssetAndPackageName.get(arg.getUri(), arg.getPackageName());
-            else
+            }
+            else {
                 assetLookupKey = keyForAsset.get(arg.getUri());
+            }
             mediaUrl = assetLookupKey;
             isAssetUrl = true;
         } else {

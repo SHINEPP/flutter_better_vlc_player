@@ -1,6 +1,7 @@
 package com.shinezzl.bettervlcplayer;
 
 import android.content.Context;
+import android.graphics.SurfaceTexture;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
@@ -24,7 +25,6 @@ import io.flutter.view.TextureRegistry.SurfaceTextureEntry;
 
 final class FlutterVlcPlayer {
 
-    private static final boolean IS_DEBUG = false;
     private final String TAG = this.getClass().getSimpleName();
 
     private static final String CHANNEL_VIDEO_EVENTS = "flutter_video_plugin/getVideoEvents_";
@@ -81,7 +81,7 @@ final class FlutterVlcPlayer {
 
         // textureView
         textureEntry = texture;
-        surface = new Surface(texture.surfaceTexture());
+        surface = new Surface(textureEntry.surfaceTexture());
     }
 
     public long getTextureId() {
@@ -94,9 +94,10 @@ final class FlutterVlcPlayer {
 
         mediaPlayer = new MediaPlayer(libVLC);
         // mediaPlayer.getVLCVout().setWindowSize(textureView.getWidth(), textureView.getHeight());
-        mediaPlayer.getVLCVout().setWindowSize(190 * 3, 60 * 3);
-        mediaPlayer.getVLCVout().setVideoSurface(textureEntry.surfaceTexture());
-        mediaPlayer.setVideoTrackEnabled(true);
+
+        mediaPlayer.getVLCVout().setVideoSurface(surface, null);
+        mediaPlayer.getVLCVout().attachViews();
+        //mediaPlayer.setVideoTrackEnabled(true);
         mediaPlayer.setEventListener(this::handleMediaPlayerEvent);
     }
 
@@ -224,6 +225,7 @@ final class FlutterVlcPlayer {
         if (mediaPlayer == null) {
             return;
         }
+        Log.d(TAG, "setStreamUrl(), url = " + url);
 
         try {
             if (mediaPlayer.isPlaying()) {
@@ -238,7 +240,7 @@ final class FlutterVlcPlayer {
                         media = new Media(libVLC, p.getFileDescriptor());
                     }
                 } catch (Exception e) {
-                    log(e.getMessage());
+                    Log.e(TAG, "setStreamUrl(), e = " + e);
                 }
             } else {
                 media = new Media(libVLC, Uri.parse(url));
@@ -273,7 +275,7 @@ final class FlutterVlcPlayer {
                 mediaPlayer.play();
             }
         } catch (Throwable e) {
-            log(e.getMessage());
+            Log.e(TAG, "setStreamUrl(), e = " + e);
         }
     }
 
@@ -645,12 +647,6 @@ final class FlutterVlcPlayer {
         return mediaPlayer.record(null);
     }
 
-    private void log(String message) {
-        if (IS_DEBUG) {
-            Log.d(TAG, message);
-        }
-    }
-
     public void dispose() {
         if (isDisposed) {
             return;
@@ -659,6 +655,7 @@ final class FlutterVlcPlayer {
 
         textureEntry.release();
         surface.release();
+
         mediaEventChannel.setStreamHandler(null);
         rendererEventChannel.setStreamHandler(null);
         if (mediaPlayer != null) {

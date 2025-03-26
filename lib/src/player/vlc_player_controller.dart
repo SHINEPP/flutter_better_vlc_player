@@ -94,9 +94,7 @@ class VlcPlayerController extends ValueNotifier<VlcPlayerValue> {
        _onInit = onInit,
        _onRendererHandler = onRendererHandler,
        super(VlcPlayerValue(duration: duration)) {
-    if (autoPlay) {
-      initialize();
-    }
+    initialize(autoPlay);
   }
 
   factory VlcPlayerController.asset(
@@ -194,7 +192,7 @@ class VlcPlayerController extends ValueNotifier<VlcPlayerValue> {
   }
 
   /// Attempts to open the given [url] and load metadata about the video.
-  Future<void> initialize() async {
+  Future<void> initialize(bool autoPlay) async {
     if (_isDisposed) {
       return;
     }
@@ -356,6 +354,10 @@ class VlcPlayerController extends ValueNotifier<VlcPlayerValue> {
     );
 
     _notifyOnInitListeners();
+
+    if (autoPlay) {
+      play();
+    }
 
     return initializingCompleter.future;
   }
