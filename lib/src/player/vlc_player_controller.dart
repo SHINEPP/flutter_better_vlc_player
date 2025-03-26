@@ -3,8 +3,8 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_better_vlc_player/src/vlc_app_life_cycle_observer.dart';
-import 'package:flutter_better_vlc_player/src/vlc_player_platform.dart';
+import 'package:flutter_better_vlc_player/src/player/vlc_app_life_cycle_observer.dart';
+import 'package:flutter_better_vlc_player/src/player/vlc_player_platform.dart';
 import 'package:flutter_better_vlc_player/flutter_better_vlc_player.dart';
 
 /// Controls a platform vlc player, and provides updates when the state is

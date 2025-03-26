@@ -1,4 +1,4 @@
-export 'src/better_vlc_player.dart' show VlcPlayer;
+export 'src/player/better_vlc_player.dart' show VlcPlayer;
 export 'src/enums/data_source_type.dart';
 export 'src/enums/hardware_acceleration.dart';
 export 'src/enums/media_event_type.dart';
@@ -18,5 +18,5 @@ export 'src/utils/options/vlc_rtp_options.dart';
 export 'src/utils/options/vlc_stream_output_options.dart';
 export 'src/utils/options/vlc_subtitle_options.dart';
 export 'src/utils/options/vlc_video_options.dart';
-export 'src/vlc_player_controller.dart' show VlcPlayerController;
-export 'src/vlc_player_value.dart' show VlcPlayerValue;
+export 'src/player/vlc_player_controller.dart' show VlcPlayerController;
+export 'src/player/vlc_player_value.dart' show VlcPlayerValue;
