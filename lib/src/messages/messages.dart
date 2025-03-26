@@ -117,13 +117,13 @@ class BooleanMessage {
   }
 }
 
-class IntegerMessage {
+class LongMessage {
   int? viewId;
   int? result;
 
-  IntegerMessage();
+  LongMessage();
 
-  IntegerMessage.decode(Object message) {
+  LongMessage.decode(Object message) {
     final Map<Object?, Object?> pigeonMap = message as Map<Object?, Object?>;
     viewId = pigeonMap['viewId'] as int?;
     result = pigeonMap['result'] as int?;
@@ -668,7 +668,7 @@ class VlcPlayerApi {
     }
   }
 
-  Future<IntegerMessage> create(CreateMessage arg) async {
+  Future<LongMessage> create(CreateMessage arg) async {
     final Object encoded = arg.encode();
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
       'dev.flutter.pigeon.VlcPlayerApi.create',
@@ -692,7 +692,7 @@ class VlcPlayerApi {
         details: error['details'],
       );
     } else {
-      return IntegerMessage.decode(replyMap['result']!);
+      return LongMessage.decode(replyMap['result']!);
     }
   }
 

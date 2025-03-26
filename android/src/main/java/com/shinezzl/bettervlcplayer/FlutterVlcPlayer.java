@@ -84,12 +84,17 @@ final class FlutterVlcPlayer {
         surface = new Surface(texture.surfaceTexture());
     }
 
+    public long getTextureId() {
+        return textureEntry.id();
+    }
+
     public void initialize(List<String> options) {
         this.options = options;
         libVLC = new LibVLC(context, options);
 
         mediaPlayer = new MediaPlayer(libVLC);
         // mediaPlayer.getVLCVout().setWindowSize(textureView.getWidth(), textureView.getHeight());
+        mediaPlayer.getVLCVout().setWindowSize(190 * 3, 60 * 3);
         mediaPlayer.getVLCVout().setVideoSurface(textureEntry.surfaceTexture());
         mediaPlayer.setVideoTrackEnabled(true);
         mediaPlayer.setEventListener(this::handleMediaPlayerEvent);

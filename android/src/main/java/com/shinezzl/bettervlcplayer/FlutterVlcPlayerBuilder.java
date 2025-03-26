@@ -65,8 +65,8 @@ public class FlutterVlcPlayerBuilder implements Messages.VlcPlayerApi {
     }
 
     @Override
-    public Messages.IntegerMessage create(Messages.CreateMessage arg) {
-        FlutterVlcPlayer player = vlcPlayers.get(arg.getViewId());
+    public Messages.LongMessage create(Messages.CreateMessage arg) {
+        FlutterVlcPlayer player = build();
 
         ArrayList<String> options = new ArrayList<>();
         if (!arg.getOptions().isEmpty()) {
@@ -92,8 +92,8 @@ public class FlutterVlcPlayerBuilder implements Messages.VlcPlayerApi {
         }
         player.setStreamUrl(mediaUrl, isAssetUrl, arg.getAutoPlay(), arg.getHwAcc());
 
-        Messages.IntegerMessage message = new Messages.IntegerMessage();
-        message.setResult(0);
+        Messages.LongMessage message = new Messages.LongMessage();
+        message.setResult(player.getTextureId());
         return message;
     }
 

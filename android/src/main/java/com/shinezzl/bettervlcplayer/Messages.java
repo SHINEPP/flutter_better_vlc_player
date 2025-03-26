@@ -288,7 +288,7 @@ public class Messages {
     /**
      * Generated class from Pigeon that represents data sent in messages.
      */
-    public static class IntegerMessage {
+    public static class LongMessage {
         private Long viewId;
 
         public Long getViewId() {
@@ -299,13 +299,13 @@ public class Messages {
             this.viewId = setterArg;
         }
 
-        private Integer result;
+        private Long result;
 
-        public int getResult() {
+        public Long getResult() {
             return result;
         }
 
-        public void setResult(Integer setterArg) {
+        public void setResult(Long setterArg) {
             this.result = setterArg;
         }
 
@@ -316,12 +316,12 @@ public class Messages {
             return toMapResult;
         }
 
-        static IntegerMessage fromMap(Map<String, Object> map) {
-            IntegerMessage fromMapResult = new IntegerMessage();
+        static LongMessage fromMap(Map<String, Object> map) {
+            LongMessage fromMapResult = new LongMessage();
             Object viewId = map.get("viewId");
             fromMapResult.viewId = (viewId == null) ? null : ((viewId instanceof Integer) ? (Integer) viewId : (Long) viewId);
             Object result = map.get("result");
-            fromMapResult.result = (Integer) result;
+            fromMapResult.result = (result == null) ? null : ((result instanceof Integer) ? (Integer) result : (Long) result);
             return fromMapResult;
         }
     }
@@ -1327,7 +1327,7 @@ public class Messages {
     public interface VlcPlayerApi {
         void initialize();
 
-        IntegerMessage create(CreateMessage arg);
+        LongMessage create(CreateMessage arg);
 
         void dispose(ViewMessage arg);
 
@@ -1450,8 +1450,8 @@ public class Messages {
                         try {
                             @SuppressWarnings("ConstantConditions")
                             CreateMessage input = CreateMessage.fromMap((Map<String, Object>) message);
-                            IntegerMessage result = api.create(input);
-                            wrapped.put("result", result);
+                            LongMessage output = api.create(input);
+                            wrapped.put("result", output.toMap());
                         } catch (Error | RuntimeException exception) {
                             wrapped.put("error", wrapError(exception));
                         }
