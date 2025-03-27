@@ -1,8 +1,9 @@
 import Foundation
 import Flutter
 
-public class VLCViewBuilder: NSObject, VlcPlayerApi{
+public class VlcPlayerCreator: NSObject, VlcPlayerApi{
     var players = [Int:VlcPlayer]()
+    var viewIdIndex = -1
 
     private var registrar: FlutterPluginRegistrar
     private var messenger: FlutterBinaryMessenger
@@ -16,11 +17,17 @@ public class VLCViewBuilder: NSObject, VlcPlayerApi{
         VlcPlayerApiSetup(messenger, self)
     }
     
-    public func build(frame: CGRect, viewId: Int64) -> VlcPlayer{
-        var vlcViewController: VlcPlayer
-        vlcViewController = VlcPlayer(frame: frame, viewId: viewId, messenger: messenger)
-        players[Int(viewId)] = vlcViewController
-        return vlcViewController;
+    // 返回给flutter层，player已经创建好的
+    public func retPlayer(viewId: Int64) -> VlcPlayer {
+      return players[Int(viewId)]!
+    }
+    
+    func newPlayer() -> VlcPlayer {
+        viewIdIndex += 1
+        let viewId = NSNumber(value: viewIdIndex).int64Value;
+        let player = VlcPlayer(viewId: viewId, messenger: messenger)
+        players[Int(viewId)] = player
+        return player;
     }
 
     func getPlayer(viewId: NSNumber?) -> VlcPlayer? {
@@ -31,7 +38,7 @@ public class VLCViewBuilder: NSObject, VlcPlayerApi{
     }
     
     public func create(_ input: CreateMessage, error: AutoreleasingUnsafeMutablePointer<FlutterError?>) -> LongMessage? {
-        let player = getPlayer(viewId: input.viewId)
+        let player = newPlayer()
         
         var isAssetUrl: Bool = false
         var mediaUrl: String = ""
@@ -52,7 +59,7 @@ public class VLCViewBuilder: NSObject, VlcPlayerApi{
         
         options = input.options as? [String] ?? []
         
-        player?.setMediaPlayerUrl(
+        player.setMediaPlayerUrl(
             uri: mediaUrl,
             isAssetUrl: isAssetUrl,
             autoPlay: input.autoPlay?.boolValue ?? true,
@@ -61,7 +68,7 @@ public class VLCViewBuilder: NSObject, VlcPlayerApi{
         )
 
         let message: LongMessage = LongMessage()
-        message.result = 0
+        message.result = NSNumber(value:player.viewId())
         return message
     }
     

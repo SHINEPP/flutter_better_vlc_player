@@ -24,7 +24,7 @@ public class VlcPlayer: NSObject, FlutterPlatformView {
         return hostedView
     }
     
-    init(frame: CGRect, viewId: Int64, messenger:FlutterBinaryMessenger) {
+    init(viewId: Int64, messenger:FlutterBinaryMessenger) {
         let mediaEventChannel = FlutterEventChannel(
             name: "flutter_video_plugin/getVideoEvents_\(viewId)",
             binaryMessenger: messenger
@@ -35,7 +35,7 @@ public class VlcPlayer: NSObject, FlutterPlatformView {
         )
         
         self.hostedViewId = viewId;
-        self.hostedView = UIView(frame: frame)
+        self.hostedView = UIView(frame: CGRectZero)
         self.vlcMediaPlayer = VLCMediaPlayer()
         // self.vlcMediaPlayer.libraryInstance.debugLogging = true
         // self.vlcMediaPlayer.libraryInstance.debugLoggingLevel = 3
