@@ -13,4 +13,7 @@
   [VlcPlayerPlugin registerWithRegistrar:registrar];
 }
 
+- (void)detachFromEngineForRegistrar:(NSObject<FlutterPluginRegistrar> *)registrar {
+}
+
 @end

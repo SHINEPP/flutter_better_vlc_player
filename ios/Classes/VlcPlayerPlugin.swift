@@ -6,4 +6,8 @@ public class VlcPlayerPlugin: NSObject, FlutterPlugin {
         let factory = VLCViewFactory(registrar: registrar)
         registrar.register(factory, withId: "flutter_video_plugin/getVideoView")
     }
+    
+    public func detachFromEngine(for registrar: any FlutterPluginRegistrar) {
+        
+    }
 }
