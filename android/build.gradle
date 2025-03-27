@@ -39,17 +39,22 @@ android {
     }
 
     sourceSets {
-        main.java.srcDirs += "src/main/kotlin"
-        test.java.srcDirs += "src/test/kotlin"
+        main.java.srcDirs += "src/main/java"
+        test.java.srcDirs += "src/test/java"
     }
 
     defaultConfig {
-        minSdk = 21
+        minSdk = 26
     }
 
     dependencies {
         testImplementation("org.jetbrains.kotlin:kotlin-test")
         testImplementation("org.mockito:mockito-core:5.0.0")
+
+        implementation("org.videolan.android:libvlc-all:3.6.0-eap14")
+        implementation("androidx.appcompat:appcompat:1.7.0")
+        implementation("androidx.legacy:legacy-support-v4:1.0.0")
+        implementation("androidx.annotation:annotation:1.9.1")
     }
 
     testOptions {

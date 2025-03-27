@@ -9,7 +9,6 @@ import 'package:flutter/services.dart';
 
 // ignore: prefer-match-file-name
 class CreateMessage {
-  int? viewId;
   String? uri;
   int? type;
   String? packageName;
@@ -21,7 +20,6 @@ class CreateMessage {
 
   CreateMessage.decode(Object message) {
     final Map<Object?, Object?> pigeonMap = message as Map<Object?, Object?>;
-    viewId = pigeonMap['viewId'] as int?;
     uri = pigeonMap['uri'] as String?;
     type = pigeonMap['type'] as int?;
     packageName = pigeonMap['packageName'] as String?;
@@ -32,7 +30,6 @@ class CreateMessage {
 
   Object encode() {
     final Map<Object?, Object?> pigeonMap = <Object?, Object?>{};
-    pigeonMap['viewId'] = viewId;
     pigeonMap['uri'] = uri;
     pigeonMap['type'] = type;
     pigeonMap['packageName'] = packageName;
@@ -106,6 +103,27 @@ class BooleanMessage {
     final Map<Object?, Object?> pigeonMap = message as Map<Object?, Object?>;
     viewId = pigeonMap['viewId'] as int?;
     result = pigeonMap['result'] as bool?;
+  }
+
+  Object encode() {
+    final Map<Object?, Object?> pigeonMap = <Object?, Object?>{};
+    pigeonMap['viewId'] = viewId;
+    pigeonMap['result'] = result;
+
+    return pigeonMap;
+  }
+}
+
+class LongMessage {
+  int? viewId;
+  int? result;
+
+  LongMessage();
+
+  LongMessage.decode(Object message) {
+    final Map<Object?, Object?> pigeonMap = message as Map<Object?, Object?>;
+    viewId = pigeonMap['viewId'] as int?;
+    result = pigeonMap['result'] as int?;
   }
 
   Object encode() {
@@ -227,6 +245,7 @@ class SnapshotMessage {
   String? snapshot;
 
   SnapshotMessage();
+
   SnapshotMessage.decode(Object message) {
     final Map<Object?, Object?> pigeonMap = message as Map<Object?, Object?>;
 
@@ -380,6 +399,7 @@ class AudioTrackMessage {
   int? audioTrackNumber;
 
   AudioTrackMessage();
+
   AudioTrackMessage.decode(Object message) {
     final Map<Object?, Object?> pigeonMap = message as Map<Object?, Object?>;
     viewId = pigeonMap['viewId'] as int?;
@@ -620,32 +640,7 @@ class VlcPlayerApi {
   VlcPlayerApi({BinaryMessenger? binaryMessenger})
       : _binaryMessenger = binaryMessenger;
 
-  Future<void> initialize() async {
-    final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-      'dev.flutter.pigeon.VlcPlayerApi.initialize',
-      const StandardMessageCodec(),
-      binaryMessenger: _binaryMessenger,
-    );
-    final Map<Object?, Object?>? replyMap =
-        await channel.send(null) as Map<Object?, Object?>?;
-    if (replyMap == null) {
-      throw PlatformException(
-        code: 'channel-error',
-        message: 'Unable to establish connection on channel.',
-        details: null,
-      );
-    } else if (replyMap['error'] != null) {
-      final Map<Object?, Object?> error =
-          replyMap['error'] as Map<Object?, Object?>? ?? {};
-      throw PlatformException(
-        code: error['code'] as String? ?? "",
-        message: error['message'] as String?,
-        details: error['details'],
-      );
-    }
-  }
-
-  Future<void> create(CreateMessage arg) async {
+  Future<LongMessage> create(CreateMessage arg) async {
     final Object encoded = arg.encode();
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
       'dev.flutter.pigeon.VlcPlayerApi.create',
@@ -668,6 +663,8 @@ class VlcPlayerApi {
         message: error['message'] as String?,
         details: error['details'],
       );
+    } else {
+      return LongMessage.decode(replyMap['result']!);
     }
   }
 

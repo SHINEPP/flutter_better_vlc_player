@@ -36,10 +36,10 @@ flutter:
   plugin:
     platforms:
       android:
-        package: com.shinezzl.flutter_better_vlc_player
-        pluginClass: FlutterBetterVlcPlayerPlugin
+        package: com.shinezzl.bettervlcplayer
+        pluginClass: BetterVlcPlayerPlugin
       ios:
-        pluginClass: FlutterBetterVlcPlayerPlugin
+        pluginClass: BetterVlcPlayerPlugin
 
   # To add assets to your plugin package, add an assets section, like this:
   # assets:

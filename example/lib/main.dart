@@ -27,12 +27,13 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBar(title: const Text('Plugin example app')),
-        body: Center(
-          child: AspectRatio(
-            aspectRatio: 19 / 6,
-            child: VlcPlayer(controller: _controller, aspectRatio: 19 / 6),
+        body: SafeArea(
+          child: VlcPlayer(
+            controller: _controller,
+            aspectRatio: 16 / 9,
+            placeholder: CircularProgressIndicator(color: Colors.blue),
           ),
         ),
       ),
