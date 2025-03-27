@@ -38,6 +38,10 @@ static NSDictionary<NSString*, id>* wrapResult(NSDictionary *result, FlutterErro
 +(BooleanMessage*)fromMap:(NSDictionary*)dict;
 -(NSDictionary*)toMap;
 @end
+@interface LongMessage ()
++(LongMessage*)fromMap:(NSDictionary*)dict;
+-(NSDictionary*)toMap;
+@end
 @interface LoopingMessage ()
 +(LoopingMessage*)fromMap:(NSDictionary*)dict;
 -(NSDictionary*)toMap;
@@ -134,10 +138,6 @@ static NSDictionary<NSString*, id>* wrapResult(NSDictionary *result, FlutterErro
 @implementation CreateMessage
 +(CreateMessage*)fromMap:(NSDictionary*)dict {
   CreateMessage* result = [[CreateMessage alloc] init];
-  result.viewId = dict[@"viewId"];
-  if ((NSNull *)result.viewId == [NSNull null]) {
-    result.viewId = nil;
-  }
   result.uri = dict[@"uri"];
   if ((NSNull *)result.uri == [NSNull null]) {
     result.uri = nil;
@@ -220,6 +220,24 @@ static NSDictionary<NSString*, id>* wrapResult(NSDictionary *result, FlutterErro
 @implementation BooleanMessage
 +(BooleanMessage*)fromMap:(NSDictionary*)dict {
   BooleanMessage* result = [[BooleanMessage alloc] init];
+  result.viewId = dict[@"viewId"];
+  if ((NSNull *)result.viewId == [NSNull null]) {
+    result.viewId = nil;
+  }
+  result.result = dict[@"result"];
+  if ((NSNull *)result.result == [NSNull null]) {
+    result.result = nil;
+  }
+  return result;
+}
+-(NSDictionary*)toMap {
+  return [NSDictionary dictionaryWithObjectsAndKeys:(self.viewId ? self.viewId : [NSNull null]), @"viewId", (self.result ? self.result : [NSNull null]), @"result", nil];
+}
+@end
+
+@implementation LongMessage
++(LongMessage*)fromMap:(NSDictionary*)dict {
+  LongMessage* result = [[LongMessage alloc] init];
   result.viewId = dict[@"viewId"];
   if ((NSNull *)result.viewId == [NSNull null]) {
     result.viewId = nil;
@@ -669,30 +687,14 @@ void VlcPlayerApiSetup(id<FlutterBinaryMessenger> binaryMessenger, id<VlcPlayerA
   {
     FlutterBasicMessageChannel *channel =
       [FlutterBasicMessageChannel
-        messageChannelWithName:@"dev.flutter.pigeon.VlcPlayerApi.initialize"
-        binaryMessenger:binaryMessenger];
-    if (api) {
-      [channel setMessageHandler:^(id _Nullable message, FlutterReply callback) {
-        FlutterError *error;
-        [api initialize:&error];
-        callback(wrapResult(nil, error));
-      }];
-    }
-    else {
-      [channel setMessageHandler:nil];
-    }
-  }
-  {
-    FlutterBasicMessageChannel *channel =
-      [FlutterBasicMessageChannel
         messageChannelWithName:@"dev.flutter.pigeon.VlcPlayerApi.create"
         binaryMessenger:binaryMessenger];
     if (api) {
       [channel setMessageHandler:^(id _Nullable message, FlutterReply callback) {
         CreateMessage *input = [CreateMessage fromMap:message];
         FlutterError *error;
-        [api create:input error:&error];
-        callback(wrapResult(nil, error));
+        LongMessage *output = [api create:input error:&error];
+        callback(wrapResult([output toMap], error));
       }];
     }
     else {

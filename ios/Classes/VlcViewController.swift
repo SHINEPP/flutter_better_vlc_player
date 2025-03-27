@@ -31,13 +31,13 @@ public class VLCViewController: NSObject, FlutterPlatformView {
         
         self.hostedView = UIView(frame: frame)
         self.vlcMediaPlayer = VLCMediaPlayer()
-//        self.vlcMediaPlayer.libraryInstance.debugLogging = true
-//        self.vlcMediaPlayer.libraryInstance.debugLoggingLevel = 3
+        // self.vlcMediaPlayer.libraryInstance.debugLogging = true
+        // self.vlcMediaPlayer.libraryInstance.debugLoggingLevel = 3
         self.mediaEventChannel = mediaEventChannel
         self.mediaEventChannelHandler = VLCPlayerEventStreamHandler()
         self.rendererEventChannel = rendererEventChannel
         self.rendererEventChannelHandler = VLCRendererEventStreamHandler()
-        //
+
         self.mediaEventChannel.setStreamHandler(mediaEventChannelHandler)
         self.rendererEventChannel.setStreamHandler(rendererEventChannelHandler)
         self.vlcMediaPlayer.drawable = self.hostedView
@@ -49,69 +49,55 @@ public class VLCViewController: NSObject, FlutterPlatformView {
     }
     
     public func pause() {
-        
         self.vlcMediaPlayer.pause()
     }
     
     public func stop() {
-        
         self.vlcMediaPlayer.stop()
     }
     
     public func isPlaying() -> NSNumber?{
-        
         return self.vlcMediaPlayer.isPlaying as NSNumber
     }
     
     public func isSeekable() -> NSNumber? {
-        
         return self.vlcMediaPlayer.isSeekable as NSNumber
     }
     
     public func setLooping(isLooping: NSNumber?) {
-        
         let enableLooping = isLooping?.boolValue ?? false;
         self.vlcMediaPlayer.media?.addOption(enableLooping ? "--loop" : "--no-loop")
     }
     
     public func seek(position: NSNumber?) {
-        
         self.vlcMediaPlayer.time = VLCTime(number: position ?? 0)
     }
     
     public func position() -> NSNumber? {
-        
         return self.vlcMediaPlayer.time.value
     }
     
     public func duration() -> NSNumber? {
-        
         return self.vlcMediaPlayer.media?.length.value ?? 0
-        
     }
     
     public func setVolume(volume: NSNumber?) {
-        
         self.vlcMediaPlayer.audio?.volume = volume?.int32Value ?? 100
     }
     
     public func getVolume() -> NSNumber? {
-        
         return NSNumber(value: self.vlcMediaPlayer.audio?.volume ?? 100)
     }
     
     public func setPlaybackSpeed(speed: NSNumber?) {
-        
         self.vlcMediaPlayer.rate = speed?.floatValue ?? 1
     }
     
     public func getPlaybackSpeed() -> NSNumber? {
-        
         return NSNumber(value: self.vlcMediaPlayer.rate)
     }
     
     public func takeSnapshot() -> String? {
-        
         let drawable: UIView = self.vlcMediaPlayer.drawable as! UIView
         let size = drawable.frame.size
         UIGraphicsBeginImageContextWithOptions(size, _: false, _: 0.0)
@@ -125,37 +111,30 @@ public class VLCViewController: NSObject, FlutterPlatformView {
     }
     
     public func getSpuTracksCount() -> NSNumber? {
-        
         return NSNumber(value: self.vlcMediaPlayer.numberOfSubtitlesTracks)
     }
     
     public func getSpuTracks() -> [Int:String]? {
-        
         return self.vlcMediaPlayer.subtitles()
     }
     
     public func setSpuTrack(spuTrackNumber: NSNumber?) {
-        
         self.vlcMediaPlayer.currentVideoSubTitleIndex = spuTrackNumber?.int32Value ?? 0
     }
     
     public func getSpuTrack() -> NSNumber? {
-        
         return NSNumber(value: self.vlcMediaPlayer.currentVideoSubTitleIndex)
     }
     
     public func setSpuDelay(delay: NSNumber?) {
-        
         self.vlcMediaPlayer.currentVideoSubTitleDelay = delay?.intValue ?? 0
     }
     
     public func getSpuDelay() -> NSNumber? {
-        
         return NSNumber(value: self.vlcMediaPlayer.currentVideoSubTitleDelay)
     }
     
     public func addSubtitleTrack(uri: String?, isSelected: NSNumber?) {
-        
         // todo: check for file type
         guard let urlString = uri,
               let url = URL(string: urlString)
@@ -170,37 +149,30 @@ public class VLCViewController: NSObject, FlutterPlatformView {
     }
     
     public func getAudioTracksCount() -> NSNumber? {
-        
         return NSNumber(value: self.vlcMediaPlayer.numberOfAudioTracks)
     }
     
     public func getAudioTracks() -> [Int:String]? {
-        
         return self.vlcMediaPlayer.audioTracks()
     }
     
     public func setAudioTrack(audioTrackNumber: NSNumber?) {
-        
         self.vlcMediaPlayer.currentAudioTrackIndex = audioTrackNumber?.int32Value ?? 0
     }
     
     public func getAudioTrack() -> NSNumber? {
-        
         return NSNumber(value: self.vlcMediaPlayer.currentAudioTrackIndex)
     }
     
     public func setAudioDelay(delay: NSNumber?) {
-        
         self.vlcMediaPlayer.currentAudioPlaybackDelay = delay?.intValue ?? 0
     }
     
     public func getAudioDelay() -> NSNumber? {
-        
         return NSNumber(value: self.vlcMediaPlayer.currentAudioPlaybackDelay)
     }
     
     public func addAudioTrack(uri: String?, isSelected: NSNumber?) {
-        
         // todo: check for file type
         guard let urlString = uri,
               let url = URL(string: urlString)
@@ -215,37 +187,30 @@ public class VLCViewController: NSObject, FlutterPlatformView {
     }
     
     public func getVideoTracksCount() -> NSNumber? {
-        
         return NSNumber(value: self.vlcMediaPlayer.numberOfVideoTracks)
     }
     
     public func getVideoTracks() -> [Int:String]? {
-        
         return self.vlcMediaPlayer.videoTracks()
     }
     
     public func setVideoTrack(videoTrackNumber: NSNumber?) {
-        
         self.vlcMediaPlayer.currentVideoTrackIndex = videoTrackNumber?.int32Value ?? 0
     }
     
     public func getVideoTrack() -> NSNumber? {
-        
         return NSNumber(value: self.vlcMediaPlayer.currentVideoTrackIndex)
     }
     
     public func setVideoScale(scale: NSNumber?) {
-        
         self.vlcMediaPlayer.scaleFactor = scale?.floatValue ?? 1
     }
     
     public func getVideoScale() -> NSNumber? {
-        
         return NSNumber(value: self.vlcMediaPlayer.scaleFactor)
     }
     
     public func setVideoAspectRatio(aspectRatio: String?) {
-        
         let aspectRatio = UnsafeMutablePointer<Int8>(
             mutating: (aspectRatio as NSString?)?.utf8String!
         )
@@ -253,19 +218,15 @@ public class VLCViewController: NSObject, FlutterPlatformView {
     }
     
     public func getVideoAspectRatio() -> String? {
-        
         guard let aspectRatio = self.vlcMediaPlayer.videoAspectRatio else { return "1"};
-        
         return String(cString: aspectRatio)
     }
     
     public func getAvailableRendererServices() -> [String]? {
-        
         return self.vlcMediaPlayer.rendererServices()
     }
     
     public func startRendererScanning() {
-        
         rendererdiscoverers.removeAll()
         rendererEventChannelHandler.renderItems.removeAll()
         // chromecast service name: "Bonjour_renderer"
@@ -282,7 +243,6 @@ public class VLCViewController: NSObject, FlutterPlatformView {
     }
     
     public func stopRendererScanning() {
-        
         for rendererDiscoverer in rendererdiscoverers {
             rendererDiscoverer.stop()
             rendererDiscoverer.delegate = nil
@@ -296,7 +256,6 @@ public class VLCViewController: NSObject, FlutterPlatformView {
     }
     
     public func getRendererDevices() -> [String: String]? {
-        
         var rendererDevices: [String: String] = [:]
         let rendererItems = rendererEventChannelHandler.renderItems
         for (_, item) in rendererItems.enumerated() {
@@ -306,7 +265,6 @@ public class VLCViewController: NSObject, FlutterPlatformView {
     }
     
     public func cast(rendererDevice: String?) {
-        
         if (self.vlcMediaPlayer.isPlaying){
             self.vlcMediaPlayer.pause()
         }
@@ -383,7 +341,7 @@ public class VLCViewController: NSObject, FlutterPlatformView {
         }
         
         self.vlcMediaPlayer.media = media
-//        self.vlcMediaPlayer.media.parse(withOptions: VLCMediaParsingOptions(VLCMediaParseLocal | VLCMediaFetchLocal | VLCMediaParseNetwork | VLCMediaFetchNetwork))
+        // self.vlcMediaPlayer.media.parse(withOptions: VLCMediaParsingOptions(VLCMediaParseLocal | VLCMediaFetchLocal | VLCMediaParseNetwork | VLCMediaFetchNetwork))
         self.vlcMediaPlayer.play()
         if(!autoPlay){
             self.vlcMediaPlayer.stop()
@@ -392,27 +350,22 @@ public class VLCViewController: NSObject, FlutterPlatformView {
 }
 
 class VLCRendererEventStreamHandler: NSObject, FlutterStreamHandler, VLCRendererDiscovererDelegate {
-    
     private var rendererEventSink: FlutterEventSink?
     var renderItems:[VLCRendererItem] = [VLCRendererItem]()
     
     
     func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
-        
         rendererEventSink = events
         return nil
     }
     
     func onCancel(withArguments arguments: Any?) -> FlutterError? {
-        
         rendererEventSink = nil
         return nil
     }
     
     func rendererDiscovererItemAdded(_ rendererDiscoverer: VLCRendererDiscoverer, item: VLCRendererItem) {
-        
         self.renderItems.append(item)
-        
         guard let rendererEventSink = self.rendererEventSink else { return }
         rendererEventSink([
             "event": "attached",
@@ -422,7 +375,6 @@ class VLCRendererEventStreamHandler: NSObject, FlutterStreamHandler, VLCRenderer
     }
     
     func rendererDiscovererItemDeleted(_ rendererDiscoverer: VLCRendererDiscoverer, item: VLCRendererItem) {
-        
         if let index = renderItems.firstIndex(of: item) {
             renderItems.remove(at: index)
         }
@@ -437,17 +389,14 @@ class VLCRendererEventStreamHandler: NSObject, FlutterStreamHandler, VLCRenderer
 }
 
 class VLCPlayerEventStreamHandler: NSObject, FlutterStreamHandler, VLCMediaPlayerDelegate, VLCMediaDelegate  {
-    
     private var mediaEventSink: FlutterEventSink?
     
     func onListen(withArguments _: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
-        
         mediaEventSink = events
         return nil
     }
     
     func onCancel(withArguments _: Any?) -> FlutterError? {
-        
         mediaEventSink = nil
         return nil
     }
@@ -697,6 +646,5 @@ extension VLCMediaPlayer {
         })
         return services
     }
-    
 }
 

@@ -3,6 +3,7 @@ import Flutter
 
 public class VLCViewBuilder: NSObject, VlcPlayerApi{
     var players = [Int:VLCViewController]()
+
     private var registrar: FlutterPluginRegistrar
     private var messenger: FlutterBinaryMessenger
     private var options: [String]
@@ -12,32 +13,24 @@ public class VLCViewBuilder: NSObject, VlcPlayerApi{
         self.messenger = registrar.messenger()
         options = []
         super.init()
-        //
         VlcPlayerApiSetup(messenger, self)
     }
     
     public func build(frame: CGRect, viewId: Int64) -> VLCViewController{
-        //
         var vlcViewController: VLCViewController
         vlcViewController = VLCViewController(frame: frame, viewId: viewId, messenger: messenger)
         players[Int(viewId)] = vlcViewController
         return vlcViewController;
     }
-    
-    public func initialize(_ error: AutoreleasingUnsafeMutablePointer<FlutterError?>) {
-        return
-    }
-    
+
     func getPlayer(viewId: NSNumber?) -> VLCViewController? {
       guard viewId != nil else {
         return nil
-        
       }
-        return players[Int(truncating: viewId! as NSNumber)]
+      return players[Int(truncating: viewId! as NSNumber)]
     }
     
-    public func create(_ input: CreateMessage, error: AutoreleasingUnsafeMutablePointer<FlutterError?>) {
-        
+    public func create(_ input: CreateMessage, error: AutoreleasingUnsafeMutablePointer<FlutterError?>) -> LongMessage? {
         let player = getPlayer(viewId: input.viewId)
         
         var isAssetUrl: Bool = false
@@ -66,10 +59,13 @@ public class VLCViewBuilder: NSObject, VlcPlayerApi{
             hwAcc: input.hwAcc?.intValue ?? HWAccellerationType.HW_ACCELERATION_AUTOMATIC.rawValue,
             options: options
         )
+
+        let message: LongMessage = LongMessage()
+        message.result = 0
+        return message
     }
     
     public func dispose(_ input: ViewMessage, error: AutoreleasingUnsafeMutablePointer<FlutterError?>) {
-        
         let player = getPlayer(viewId: input.viewId)
         
         player?.dispose()
@@ -77,7 +73,6 @@ public class VLCViewBuilder: NSObject, VlcPlayerApi{
     }
     
     public func setStreamUrl(_ input: SetMediaMessage, error: AutoreleasingUnsafeMutablePointer<FlutterError?>) {
-        
         let player = getPlayer(viewId: input.viewId)
         
         var isAssetUrl: Bool = false
@@ -106,30 +101,22 @@ public class VLCViewBuilder: NSObject, VlcPlayerApi{
     }
     
     public func play(_ input: ViewMessage, error: AutoreleasingUnsafeMutablePointer<FlutterError?>) {
-        
         let player = getPlayer(viewId: input.viewId)
-        
         player?.play()
     }
     
     public func pause(_ input: ViewMessage, error: AutoreleasingUnsafeMutablePointer<FlutterError?>) {
-        
         let player = getPlayer(viewId: input.viewId)
-        
         player?.pause()
     }
     
     public func stop(_ input: ViewMessage, error: AutoreleasingUnsafeMutablePointer<FlutterError?>) {
-        
         let player = getPlayer(viewId: input.viewId)
-        
         player?.stop()
     }
     
     public func isPlaying(_ input: ViewMessage, error: AutoreleasingUnsafeMutablePointer<FlutterError?>) -> BooleanMessage? {
-        
         let player = getPlayer(viewId: input.viewId)
-
         let message: BooleanMessage = BooleanMessage()
         message.result = player?.isPlaying()
         return message

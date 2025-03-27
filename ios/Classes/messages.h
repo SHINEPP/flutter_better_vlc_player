@@ -36,7 +36,6 @@ NS_ASSUME_NONNULL_BEGIN
 @class RecordMessage;
 
 @interface CreateMessage : NSObject
-@property(nonatomic, strong, nullable) NSNumber * viewId;
 @property(nonatomic, copy, nullable) NSString * uri;
 @property(nonatomic, strong, nullable) NSNumber * type;
 @property(nonatomic, copy, nullable) NSString * packageName;
@@ -59,6 +58,11 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @interface BooleanMessage : NSObject
+@property(nonatomic, strong, nullable) NSNumber * viewId;
+@property(nonatomic, strong, nullable) NSNumber * result;
+@end
+
+@interface LongMessage : NSObject
 @property(nonatomic, strong, nullable) NSNumber * viewId;
 @property(nonatomic, strong, nullable) NSNumber * result;
 @end
@@ -183,8 +187,7 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @protocol VlcPlayerApi
--(void)initialize:(FlutterError *_Nullable *_Nonnull)error;
--(void)create:(CreateMessage*)input error:(FlutterError *_Nullable *_Nonnull)error;
+-(nullable LongMessage *)create:(CreateMessage*)input error:(FlutterError *_Nullable *_Nonnull)error;
 -(void)dispose:(ViewMessage*)input error:(FlutterError *_Nullable *_Nonnull)error;
 -(void)setStreamUrl:(SetMediaMessage*)input error:(FlutterError *_Nullable *_Nonnull)error;
 -(void)play:(ViewMessage*)input error:(FlutterError *_Nullable *_Nonnull)error;

@@ -1,4 +1,4 @@
-#import "FlutterVlcPlayerPlugin.h"
+#import "BetterVlcPlayerPlugin.h"
 #if __has_include(<flutter_vlc_player/flutter_vlc_player-Swift.h>)
 #import <flutter_vlc_player/flutter_vlc_player-Swift.h>
 #else
@@ -8,8 +8,8 @@
 #import "flutter_vlc_player-Swift.h"
 #endif
 
-@implementation FlutterVlcPlayerPlugin
+@implementation BetterVlcPlayerPlugin
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
-  [SwiftFlutterVlcPlayerPlugin registerWithRegistrar:registrar];
+  [VlcPlayerPlugin registerWithRegistrar:registrar];
 }
 @end
