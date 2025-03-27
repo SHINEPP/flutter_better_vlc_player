@@ -4,7 +4,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
-import android.view.Surface;
 
 import com.shinezzl.bettervlcplayer.Enums.HwAcc;
 
@@ -13,8 +12,6 @@ import org.videolan.libvlc.Media;
 import org.videolan.libvlc.MediaPlayer;
 import org.videolan.libvlc.RendererDiscoverer;
 import org.videolan.libvlc.RendererItem;
-import org.videolan.libvlc.interfaces.IMedia;
-import org.videolan.libvlc.interfaces.IVLCVout;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,7 +19,6 @@ import java.util.List;
 
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.EventChannel;
-import io.flutter.view.TextureRegistry;
 import io.flutter.view.TextureRegistry.SurfaceTextureEntry;
 
 final class FlutterVlcPlayer {
@@ -33,7 +29,6 @@ final class FlutterVlcPlayer {
     private static final String CHANNEL_RENDERER_EVENTS = "flutter_video_plugin/getRendererEvents_";
 
     private final Context context;
-    private final TextureRegistry textureRegistry;
     private final SurfaceTextureEntry textureEntry;
 
     private final QueuingEventSink mediaEventSink = new QueuingEventSink();
@@ -50,13 +45,10 @@ final class FlutterVlcPlayer {
     private boolean isDisposed = false;
 
     // VLC Player
-    FlutterVlcPlayer(Context context, TextureRegistry textureRegistry, BinaryMessenger binaryMessenger, List<String> options) {
+    FlutterVlcPlayer(Context context, SurfaceTextureEntry textureEntry, BinaryMessenger binaryMessenger, List<String> options) {
         this.context = context;
-        this.textureRegistry = textureRegistry;
+        this.textureEntry = textureEntry;
         this.options = options;
-
-        // textureView
-        textureEntry = textureRegistry.createSurfaceTexture();
 
         // event for media
         mediaEventChannel = new EventChannel(binaryMessenger, CHANNEL_VIDEO_EVENTS + textureEntry.id());
@@ -88,21 +80,25 @@ final class FlutterVlcPlayer {
 
         libVLC = new LibVLC(context, options);
         mediaPlayer = new MediaPlayer(libVLC);
-        mediaPlayer.getVLCVout().setWindowSize(854, 480);
+        mediaPlayer.setEventListener(this::handleMediaPlayerEvent);
+
+        //mediaPlayer.getVLCVout().setWindowSize(854, 480);
         //mediaPlayer.getVLCVout().setWindowSize(textureView.getWidth(), textureView.getHeight());
         mediaPlayer.getVLCVout().setVideoSurface(textureEntry.surfaceTexture());
-        mediaPlayer.getVLCVout().attachViews(new IVLCVout.OnNewVideoLayoutListener() {
-            @Override
-            public void onNewVideoLayout(IVLCVout vlcVout, int width, int height, int visibleWidth, int visibleHeight, int sarNum, int sarDen) {
-                Log.d(TAG, "onNewVideoLayout(), width = " + width + ", height = " + height + ", visibleWidth = " + visibleWidth + ", visibleHeight = " + visibleHeight);
-            }
-        });
-        mediaPlayer.setVideoTrackEnabled(true);
-        mediaPlayer.setEventListener(this::handleMediaPlayerEvent);
+        mediaPlayer.getVLCVout().attachViews();
+        //mediaPlayer.setVideoTrackEnabled(true);
+
+        setDefaultBufferSize(854, 480);
     }
 
     public long getTextureId() {
         return textureEntry.id();
+    }
+
+    public void setDefaultBufferSize(int width, int height) {
+        textureEntry.surfaceTexture().setDefaultBufferSize(width, height);
+        mediaPlayer.setAspectRatio(width + ":" + height);
+        mediaPlayer.getVLCVout().setWindowSize(width, height);
     }
 
     private void handleMediaPlayerEvent(MediaPlayer.Event event) {
@@ -659,7 +655,6 @@ final class FlutterVlcPlayer {
         isDisposed = true;
 
         textureEntry.release();
-
         mediaEventChannel.setStreamHandler(null);
         rendererEventChannel.setStreamHandler(null);
         if (mediaPlayer != null) {

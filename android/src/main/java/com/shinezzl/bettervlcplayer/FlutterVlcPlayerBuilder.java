@@ -1,8 +1,6 @@
 package com.shinezzl.bettervlcplayer;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.LongSparseArray;
 
 import com.shinezzl.bettervlcplayer.Enums.DataSourceType;
@@ -49,8 +47,9 @@ public class FlutterVlcPlayerBuilder implements Messages.VlcPlayerApi {
     }
 
     FlutterVlcPlayer build(List<String> options) {
-        FlutterVlcPlayer vlcPlayer = new FlutterVlcPlayer(context, textureRegistry, messenger, options);
-        vlcPlayers.append(vlcPlayer.getTextureId(), vlcPlayer);
+        TextureRegistry.SurfaceTextureEntry textureEntry = textureRegistry.createSurfaceTexture();
+        FlutterVlcPlayer vlcPlayer = new FlutterVlcPlayer(context, textureEntry, messenger, options);
+        vlcPlayers.append(textureEntry.id(), vlcPlayer);
         return vlcPlayer;
     }
 
@@ -89,8 +88,7 @@ public class FlutterVlcPlayerBuilder implements Messages.VlcPlayerApi {
             isAssetUrl = false;
         }
 
-        new Handler(Looper.getMainLooper())
-                .postDelayed(() -> player.setStreamUrl(mediaUrl, isAssetUrl, arg.getAutoPlay(), arg.getHwAcc()), 3000);
+        player.setStreamUrl(mediaUrl, isAssetUrl, arg.getAutoPlay(), arg.getHwAcc());
 
         Messages.LongMessage message = new Messages.LongMessage();
         message.setResult(player.getTextureId());
