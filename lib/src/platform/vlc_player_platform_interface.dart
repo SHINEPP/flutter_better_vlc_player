@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_better_vlc_player/flutter_better_vlc_player.dart';
-import 'package:flutter_better_vlc_player/src/method_channel/method_channel_vlc_player.dart';
+import 'package:flutter_better_vlc_player/src/platform/vlc_player_platform_impl.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 /// The interface that implementations of vlc must implement.
@@ -13,11 +13,11 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 abstract class VlcPlayerPlatform extends PlatformInterface {
   static final Object _token = Object();
 
-  static VlcPlayerPlatform _instance = MethodChannelVlcPlayer();
+  static VlcPlayerPlatform _instance = VlcPlayerPlatformImpl();
 
   /// The default instance of [VlcPlayerPlatform] to use.
   ///
-  /// Defaults to [MethodChannelVlcPlayer].
+  /// Defaults to [VlcPlayerPlatformImpl].
   static VlcPlayerPlatform get instance => _instance;
 
   /// Platform-specific plugins should set this with their own platform-specific
@@ -30,25 +30,6 @@ abstract class VlcPlayerPlatform extends PlatformInterface {
   /// Constructs a VlcPlayerPlatform.
   VlcPlayerPlatform() : super(token: _token);
 
-  // ignore: avoid_returning_widgets
-  /// Returns a widget displaying the video.
-  Widget buildView(int textureId, {bool virtualDisplay = true}) {
-    throw _unimplemented('buildView');
-  }
-
-  /// Initializes the platform interface and disposes all existing players.
-  ///
-  /// This method is called when the plugin is first initialized
-  /// and on every full restart.
-  Future<void> init() {
-    throw _unimplemented('init');
-  }
-
-  /// Clears one video.
-  Future<void> dispose(int viewId) {
-    throw _unimplemented('dispose');
-  }
-
   /// Creates an instance of a vlc player
   Future<int> create({
     required String uri,
@@ -59,6 +40,11 @@ abstract class VlcPlayerPlatform extends PlatformInterface {
     VlcPlayerOptions? options,
   }) {
     throw _unimplemented('create');
+  }
+
+  /// Returns a widget displaying the video.
+  Widget buildView(int viewId) {
+    throw _unimplemented('buildView');
   }
 
   /// Returns a Stream of [VlcMediaEvent]s.
@@ -337,6 +323,11 @@ abstract class VlcPlayerPlatform extends PlatformInterface {
   /// Returns true if vlc stops recording.
   Future<bool?> stopRecording(int viewId) {
     throw _unimplemented('stopRecording');
+  }
+
+  /// Clears one video.
+  Future<void> dispose(int viewId) {
+    throw _unimplemented('dispose');
   }
 
   Object _unimplemented(String methodName) {

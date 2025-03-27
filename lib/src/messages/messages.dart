@@ -9,7 +9,6 @@ import 'package:flutter/services.dart';
 
 // ignore: prefer-match-file-name
 class CreateMessage {
-  int? viewId;
   String? uri;
   int? type;
   String? packageName;
@@ -21,7 +20,6 @@ class CreateMessage {
 
   CreateMessage.decode(Object message) {
     final Map<Object?, Object?> pigeonMap = message as Map<Object?, Object?>;
-    viewId = pigeonMap['viewId'] as int?;
     uri = pigeonMap['uri'] as String?;
     type = pigeonMap['type'] as int?;
     packageName = pigeonMap['packageName'] as String?;
@@ -32,7 +30,6 @@ class CreateMessage {
 
   Object encode() {
     final Map<Object?, Object?> pigeonMap = <Object?, Object?>{};
-    pigeonMap['viewId'] = viewId;
     pigeonMap['uri'] = uri;
     pigeonMap['type'] = type;
     pigeonMap['packageName'] = packageName;

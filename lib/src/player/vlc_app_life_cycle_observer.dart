@@ -2,10 +2,10 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_better_vlc_player/src/player/vlc_player_controller.dart';
 
 class VlcAppLifeCycleObserver extends Object with WidgetsBindingObserver {
-  bool _wasPlayingBeforePause = false;
-  final VlcPlayerController _controller;
-
   VlcAppLifeCycleObserver(this._controller);
+
+  final VlcPlayerController _controller;
+  bool _wasPlayingBeforePause = false;
 
   void initialize() {
     WidgetsBinding.instance.addObserver(this);

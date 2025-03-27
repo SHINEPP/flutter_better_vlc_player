@@ -29,18 +29,12 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBar(title: const Text('VLC')),
-        body: Column(
-          children: [
-            AspectRatio(
-              aspectRatio: 16 / 9,
-              child: VlcPlayer(
-                controller: _controller,
-                aspectRatio: 16 / 9,
-                placeholder: CircularProgressIndicator(color: Colors.blue),
-              ),
-            ),
-          ],
+        body: SafeArea(
+          child: VlcPlayer(
+            controller: _controller,
+            aspectRatio: 16 / 9,
+            placeholder: CircularProgressIndicator(color: Colors.blue),
+          ),
         ),
       ),
     );

@@ -9,7 +9,7 @@ import 'package:flutter_better_vlc_player/flutter_better_vlc_player.dart';
 import 'package:flutter_better_vlc_player/src/messages/messages.dart';
 
 /// An implementation of [VlcPlayerPlatform] that uses method channels.
-class MethodChannelVlcPlayer extends VlcPlayerPlatform {
+class VlcPlayerPlatformImpl extends VlcPlayerPlatform {
   final _api = VlcPlayerApi();
 
   EventChannel _mediaEventChannelFor(int viewId) {
@@ -18,11 +18,6 @@ class MethodChannelVlcPlayer extends VlcPlayerPlatform {
 
   EventChannel _rendererEventChannelFor(int viewId) {
     return EventChannel('flutter_video_plugin/getRendererEvents_$viewId');
-  }
-
-  @override
-  Future<void> init() async {
-    return _api.initialize();
   }
 
   @override
@@ -35,7 +30,6 @@ class MethodChannelVlcPlayer extends VlcPlayerPlatform {
     VlcPlayerOptions? options,
   }) async {
     final message = CreateMessage();
-    message.viewId = null;
     message.uri = uri;
     message.type = type.index;
     message.packageName = package;
@@ -46,24 +40,11 @@ class MethodChannelVlcPlayer extends VlcPlayerPlatform {
     return response.result!;
   }
 
-  // ignore: proper_super_calls
   @override
-  Future<void> dispose(int viewId) async {
-    return _api.dispose(ViewMessage()..viewId = viewId);
-  }
-
-  /// This method builds the appropriate platform view where the player
-  /// can be rendered.
-  /// The `viewId` is passed as a parameter from the framework on the
-  /// `onPlatformViewCreated` callback.
-  ///
-  /// The `virtualDisplay` specifies whether Virtual displays or Hybrid composition is used on Android.
-  /// iOS only uses Hybrid composition.
-  @override
-  Widget buildView(int textureId, {bool virtualDisplay = true}) {
+  Widget buildView(int viewId) {
     const viewType = 'flutter_video_plugin/getVideoView';
     if (Platform.isAndroid) {
-      return Texture(textureId: textureId);
+      return Texture(textureId: viewId);
     } else if (Platform.isIOS) {
       return UiKitView(
         viewType: viewType,
@@ -71,18 +52,16 @@ class MethodChannelVlcPlayer extends VlcPlayerPlatform {
         creationParamsCodec: const StandardMessageCodec(),
       );
     }
-
     return const Text('Requested platform is not yet supported by this plugin');
   }
 
   @override
-  // ignore: cyclomatic_complexity
   Stream<VlcMediaEvent> mediaEventsFor(int viewId) {
     return _mediaEventChannelFor(viewId).receiveBroadcastStream().map((
       dynamic event,
     ) {
       final Map<Object?, Object?> map = event as Map<Object?, Object?>;
-      //
+
       switch (map['event']) {
         case 'opening':
           return VlcMediaEvent(mediaEventType: VlcMediaEventType.opening);
@@ -207,7 +186,6 @@ class MethodChannelVlcPlayer extends VlcPlayerPlatform {
   @override
   Future<bool?> isSeekable(int viewId) async {
     final response = await _api.isSeekable(ViewMessage()..viewId = viewId);
-
     return response.result;
   }
 
@@ -223,14 +201,12 @@ class MethodChannelVlcPlayer extends VlcPlayerPlatform {
   @override
   Future<Duration> getPosition(int viewId) async {
     final response = await _api.position(ViewMessage()..viewId = viewId);
-
     return Duration(milliseconds: response.position ?? 0);
   }
 
   @override
   Future<Duration> getDuration(int viewId) async {
     final response = await _api.duration(ViewMessage()..viewId = viewId);
-
     return Duration(milliseconds: response.duration ?? 0);
   }
 
@@ -246,14 +222,12 @@ class MethodChannelVlcPlayer extends VlcPlayerPlatform {
   @override
   Future<int?> getVolume(int viewId) async {
     final response = await _api.getVolume(ViewMessage()..viewId = viewId);
-
     return response.volume;
   }
 
   @override
   Future<void> setPlaybackSpeed(int viewId, double speed) async {
     assert(speed > 0);
-
     return _api.setPlaybackSpeed(
       PlaybackSpeedMessage()
         ..viewId = viewId
@@ -266,7 +240,6 @@ class MethodChannelVlcPlayer extends VlcPlayerPlatform {
     final response = await _api.getPlaybackSpeed(
       ViewMessage()..viewId = viewId,
     );
-
     return response.speed;
   }
 
@@ -275,21 +248,18 @@ class MethodChannelVlcPlayer extends VlcPlayerPlatform {
     final response = await _api.getSpuTracksCount(
       ViewMessage()..viewId = viewId,
     );
-
     return response.count;
   }
 
   @override
   Future<Map<int, String>> getSpuTracks(int viewId) async {
     final response = await _api.getSpuTracks(ViewMessage()..viewId = viewId);
-
     return response.subtitles?.cast<int, String>() ?? {};
   }
 
   @override
   Future<int?> getSpuTrack(int viewId) async {
     final response = await _api.getSpuTrack(ViewMessage()..viewId = viewId);
-
     return response.spuTrackNumber;
   }
 
@@ -314,7 +284,6 @@ class MethodChannelVlcPlayer extends VlcPlayerPlatform {
   @override
   Future<int?> getSpuDelay(int viewId) async {
     final response = await _api.getSpuDelay(ViewMessage()..viewId = viewId);
-
     return response.delay;
   }
 
@@ -330,7 +299,6 @@ class MethodChannelVlcPlayer extends VlcPlayerPlatform {
     message.uri = uri;
     message.type = type.index;
     message.isSelected = isSelected;
-
     return _api.addSubtitleTrack(message);
   }
 
@@ -339,21 +307,18 @@ class MethodChannelVlcPlayer extends VlcPlayerPlatform {
     final response = await _api.getAudioTracksCount(
       ViewMessage()..viewId = viewId,
     );
-
     return response.count;
   }
 
   @override
   Future<Map<int, String>> getAudioTracks(int viewId) async {
     final response = await _api.getAudioTracks(ViewMessage()..viewId = viewId);
-
     return response.audios?.cast<int, String>() ?? {};
   }
 
   @override
   Future<int?> getAudioTrack(int viewId) async {
     final response = await _api.getAudioTrack(ViewMessage()..viewId = viewId);
-
     return response.audioTrackNumber;
   }
 
@@ -378,7 +343,6 @@ class MethodChannelVlcPlayer extends VlcPlayerPlatform {
   @override
   Future<int?> getAudioDelay(int viewId) async {
     final response = await _api.getAudioDelay(ViewMessage()..viewId = viewId);
-
     return response.delay;
   }
 
@@ -394,7 +358,6 @@ class MethodChannelVlcPlayer extends VlcPlayerPlatform {
     message.uri = uri;
     message.type = type.index;
     message.isSelected = isSelected;
-
     return _api.addAudioTrack(message);
   }
 
@@ -403,14 +366,12 @@ class MethodChannelVlcPlayer extends VlcPlayerPlatform {
     final response = await _api.getVideoTracksCount(
       ViewMessage()..viewId = viewId,
     );
-
     return response.count;
   }
 
   @override
   Future<Map<int, String>> getVideoTracks(int viewId) async {
     final response = await _api.getVideoTracks(ViewMessage()..viewId = viewId);
-
     return response.videos?.cast<int, String>() ?? {};
   }
 
@@ -426,7 +387,6 @@ class MethodChannelVlcPlayer extends VlcPlayerPlatform {
   @override
   Future<int?> getVideoTrack(int viewId) async {
     final response = await _api.getVideoTrack(ViewMessage()..viewId = viewId);
-
     return response.videoTrackNumber;
   }
 
@@ -442,7 +402,6 @@ class MethodChannelVlcPlayer extends VlcPlayerPlatform {
   @override
   Future<double?> getVideoScale(int viewId) async {
     final response = await _api.getVideoScale(ViewMessage()..viewId = viewId);
-
     return response.scale;
   }
 
@@ -460,7 +419,6 @@ class MethodChannelVlcPlayer extends VlcPlayerPlatform {
     final response = await _api.getVideoAspectRatio(
       ViewMessage()..viewId = viewId,
     );
-
     return response.aspectRatio;
   }
 
@@ -473,7 +431,6 @@ class MethodChannelVlcPlayer extends VlcPlayerPlatform {
     final response = await _api.takeSnapshot(ViewMessage()..viewId = viewId);
     final base64String = response.snapshot ?? "";
     final imageBytes = base64Decode(base64.normalize(base64String));
-
     return imageBytes;
   }
 
@@ -482,7 +439,6 @@ class MethodChannelVlcPlayer extends VlcPlayerPlatform {
     final response = await _api.getAvailableRendererServices(
       ViewMessage()..viewId = viewId,
     );
-
     return response.services?.cast<String>() ?? [];
   }
 
@@ -527,7 +483,6 @@ class MethodChannelVlcPlayer extends VlcPlayerPlatform {
       dynamic event,
     ) {
       final Map<Object?, Object?> map = event as Map<Object?, Object?>;
-      //
       switch (map['event']) {
         case 'attached':
           return VlcRendererEvent(
@@ -535,14 +490,12 @@ class MethodChannelVlcPlayer extends VlcPlayerPlatform {
             rendererId: map['id'].toString(),
             rendererName: map['name'].toString(),
           );
-        //
         case 'detached':
           return VlcRendererEvent(
             eventType: VlcRendererEventType.detached,
             rendererId: map['id'].toString(),
             rendererName: map['name'].toString(),
           );
-        //
         default:
           return VlcRendererEvent(eventType: VlcRendererEventType.unknown);
       }
@@ -556,14 +509,17 @@ class MethodChannelVlcPlayer extends VlcPlayerPlatform {
         ..viewId = viewId
         ..saveDirectory = saveDirectory,
     );
-
     return response.result;
   }
 
   @override
   Future<bool?> stopRecording(int viewId) async {
     final response = await _api.stopRecording(ViewMessage()..viewId = viewId);
-
     return response.result;
+  }
+
+  @override
+  Future<void> dispose(int viewId) async {
+    return _api.dispose(ViewMessage()..viewId = viewId);
   }
 }
