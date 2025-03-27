@@ -1,7 +1,6 @@
 package com.shinezzl.bettervlcplayer;
 
 import android.content.Context;
-import android.graphics.SurfaceTexture;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
@@ -32,7 +31,6 @@ final class FlutterVlcPlayer {
 
     private final Context context;
     private final SurfaceTextureEntry textureEntry;
-    private final Surface surface;
 
     private final QueuingEventSink mediaEventSink = new QueuingEventSink();
     private final EventChannel mediaEventChannel;
@@ -40,16 +38,17 @@ final class FlutterVlcPlayer {
     private final QueuingEventSink rendererEventSink = new QueuingEventSink();
     private final EventChannel rendererEventChannel;
 
+    private final List<String> options;
     private LibVLC libVLC;
     private MediaPlayer mediaPlayer;
-    private List<String> options;
     private List<RendererDiscoverer> rendererDiscoverers = new ArrayList<>();
     private List<RendererItem> rendererItems = new ArrayList<>();
     private boolean isDisposed = false;
 
     // VLC Player
-    FlutterVlcPlayer(Context context, SurfaceTextureEntry texture, BinaryMessenger binaryMessenger) {
+    FlutterVlcPlayer(Context context, SurfaceTextureEntry texture, BinaryMessenger binaryMessenger, List<String> options) {
         this.context = context;
+        this.options = options;
 
         // event for media
         mediaEventChannel = new EventChannel(binaryMessenger, CHANNEL_VIDEO_EVENTS + texture.id());
@@ -81,24 +80,18 @@ final class FlutterVlcPlayer {
 
         // textureView
         textureEntry = texture;
-        surface = new Surface(textureEntry.surfaceTexture());
+
+        libVLC = new LibVLC(context, options);
+        mediaPlayer = new MediaPlayer(libVLC);
+        //mediaPlayer.getVLCVout().setWindowSize(textureView.getWidth(), textureView.getHeight());
+        mediaPlayer.getVLCVout().setVideoSurface(textureEntry.surfaceTexture());
+        mediaPlayer.getVLCVout().attachViews();
+        //mediaPlayer.setVideoTrackEnabled(true);
+        mediaPlayer.setEventListener(this::handleMediaPlayerEvent);
     }
 
     public long getTextureId() {
         return textureEntry.id();
-    }
-
-    public void initialize(List<String> options) {
-        this.options = options;
-        libVLC = new LibVLC(context, options);
-
-        mediaPlayer = new MediaPlayer(libVLC);
-        // mediaPlayer.getVLCVout().setWindowSize(textureView.getWidth(), textureView.getHeight());
-
-        mediaPlayer.getVLCVout().setVideoSurface(surface, null);
-        mediaPlayer.getVLCVout().attachViews();
-        //mediaPlayer.setVideoTrackEnabled(true);
-        mediaPlayer.setEventListener(this::handleMediaPlayerEvent);
     }
 
     private void handleMediaPlayerEvent(MediaPlayer.Event event) {
@@ -654,7 +647,6 @@ final class FlutterVlcPlayer {
         isDisposed = true;
 
         textureEntry.release();
-        surface.release();
 
         mediaEventChannel.setStreamHandler(null);
         rendererEventChannel.setStreamHandler(null);

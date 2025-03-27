@@ -1325,8 +1325,6 @@ public class Messages {
      * Generated interface from Pigeon that represents a handler of messages from Flutter.
      */
     public interface VlcPlayerApi {
-        void initialize();
-
         LongMessage create(CreateMessage arg);
 
         void dispose(ViewMessage arg);
@@ -1423,24 +1421,6 @@ public class Messages {
          * Sets up an instance of `VlcPlayerApi` to handle messages through the `binaryMessenger`.
          */
         static void setup(BinaryMessenger binaryMessenger, VlcPlayerApi api) {
-            {
-                BasicMessageChannel<Object> channel =
-                        new BasicMessageChannel<>(binaryMessenger, "dev.flutter.pigeon.VlcPlayerApi.initialize", new StandardMessageCodec());
-                if (api != null) {
-                    channel.setMessageHandler((message, reply) -> {
-                        Map<String, Object> wrapped = new HashMap<>();
-                        try {
-                            api.initialize();
-                            wrapped.put("result", null);
-                        } catch (Error | RuntimeException exception) {
-                            wrapped.put("error", wrapError(exception));
-                        }
-                        reply.reply(wrapped);
-                    });
-                } else {
-                    channel.setMessageHandler(null);
-                }
-            }
             {
                 BasicMessageChannel<Object> channel =
                         new BasicMessageChannel<>(binaryMessenger, "dev.flutter.pigeon.VlcPlayerApi.create", new StandardMessageCodec());
