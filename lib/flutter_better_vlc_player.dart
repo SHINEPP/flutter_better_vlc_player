@@ -1,4 +1,4 @@
-export 'src/player/better_vlc_player.dart' show VlcPlayer;
+export 'src/player/vlc_player.dart' show VlcPlayer;
 export 'src/enums/data_source_type.dart';
 export 'src/enums/hardware_acceleration.dart';
 export 'src/enums/media_event_type.dart';

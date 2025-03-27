@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_better_vlc_player/flutter_better_vlc_player.dart';
-import 'package:flutter_better_vlc_player/src/player/vlc_player_controller.dart';
 
 class VlcPlayer extends StatefulWidget {
   const VlcPlayer({
