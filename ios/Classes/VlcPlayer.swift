@@ -37,8 +37,6 @@ public class VlcPlayer: NSObject, FlutterPlatformView {
         self.hostedViewId = viewId;
         self.hostedView = UIView(frame: CGRectZero)
         self.vlcMediaPlayer = VLCMediaPlayer()
-        // self.vlcMediaPlayer.libraryInstance.debugLogging = true
-        // self.vlcMediaPlayer.libraryInstance.debugLoggingLevel = 3
         self.mediaEventChannel = mediaEventChannel
         self.mediaEventChannelHandler = VLCPlayerEventStreamHandler()
         self.rendererEventChannel = rendererEventChannel
@@ -290,14 +288,6 @@ public class VlcPlayer: NSObject, FlutterPlatformView {
         return (!self.vlcMediaPlayer.stopRecording()) as NSNumber
     }
     
-    public func dispose(){
-        self.mediaEventChannel.setStreamHandler(nil);
-        self.rendererEventChannel.setStreamHandler(nil);
-        self.rendererdiscoverers.removeAll()
-        self.rendererEventChannelHandler.renderItems.removeAll()
-        self.vlcMediaPlayer.stop()
-    }
-    
     func setMediaPlayerUrl(uri: String, isAssetUrl: Bool, autoPlay: Bool, hwAcc: Int, options: [String]){
         self.vlcMediaPlayer.stop()
         
@@ -352,6 +342,15 @@ public class VlcPlayer: NSObject, FlutterPlatformView {
         if(!autoPlay){
             self.vlcMediaPlayer.stop()
         }
+    }
+    
+    public func dispose(){
+        self.mediaEventChannel.setStreamHandler(nil);
+        self.rendererEventChannel.setStreamHandler(nil);
+        self.rendererdiscoverers.removeAll()
+        self.rendererEventChannelHandler.renderItems.removeAll()
+        self.vlcMediaPlayer.stop()
+        self.hostedView.removeFromSuperview()
     }
 }
 

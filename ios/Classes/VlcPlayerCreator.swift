@@ -74,7 +74,6 @@ public class VlcPlayerCreator: NSObject, VlcPlayerApi{
     
     public func dispose(_ input: ViewMessage, error: AutoreleasingUnsafeMutablePointer<FlutterError?>) {
         let player = getPlayer(viewId: input.viewId)
-        
         player?.dispose()
         players.removeValue(forKey: input.viewId as! Int)
     }
