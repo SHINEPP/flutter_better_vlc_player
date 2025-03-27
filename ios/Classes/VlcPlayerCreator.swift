@@ -23,10 +23,10 @@ public class VlcPlayerCreator: NSObject, VlcPlayerApi{
     }
     
     public func disposePlayers() {
-        for player in players {
+        for (id, player) in players {
             player.dispose()
         }
-        
+        players.removeAll()
     }
     
     func newPlayer() -> VlcPlayer {
