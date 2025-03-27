@@ -5,7 +5,7 @@ import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
 
-import com.shinezzl.bettervlcplayer.Enums.HwAcc;
+import com.shinezzl.bettervlcplayer.enums.HwAcc;
 
 import org.videolan.libvlc.LibVLC;
 import org.videolan.libvlc.Media;
@@ -21,7 +21,7 @@ import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.EventChannel;
 import io.flutter.view.TextureRegistry.SurfaceTextureEntry;
 
-final class FlutterVlcPlayer {
+final class VlcPlayer {
 
     private final String TAG = this.getClass().getSimpleName();
 
@@ -45,7 +45,7 @@ final class FlutterVlcPlayer {
     private boolean isDisposed = false;
 
     // VLC Player
-    FlutterVlcPlayer(Context context, SurfaceTextureEntry textureEntry, BinaryMessenger binaryMessenger, List<String> options) {
+    VlcPlayer(Context context, SurfaceTextureEntry textureEntry, BinaryMessenger binaryMessenger, List<String> options) {
         this.context = context;
         this.textureEntry = textureEntry;
         this.options = options;

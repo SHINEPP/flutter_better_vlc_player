@@ -8,24 +8,24 @@ import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 
-public class FlutterVlcPlayerPlugin implements FlutterPlugin, ActivityAware {
+public class BetterVlcPlayerPlugin implements FlutterPlugin, ActivityAware {
 
-    private FlutterVlcPlayerBuilder playerBuilder;
+    private VlcPlayerCreator playerCreator;
 
-    public FlutterVlcPlayerPlugin() {
+    public BetterVlcPlayerPlugin() {
     }
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding binding) {
-        if (playerBuilder == null) {
+        if (playerCreator == null) {
             final FlutterInjector injector = FlutterInjector.instance();
-            playerBuilder = new FlutterVlcPlayerBuilder(binding.getApplicationContext(),
+            playerCreator = new VlcPlayerCreator(binding.getApplicationContext(),
                     binding.getBinaryMessenger(),
                     binding.getTextureRegistry(),
                     injector.flutterLoader()::getLookupKeyForAsset,
                     injector.flutterLoader()::getLookupKeyForAsset);
         }
-        playerBuilder.startListening();
+        playerCreator.startListening();
     }
 
     @Override
@@ -46,9 +46,9 @@ public class FlutterVlcPlayerPlugin implements FlutterPlugin, ActivityAware {
 
     @Override
     public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
-        if (playerBuilder != null) {
-            playerBuilder.stopListening();
-            playerBuilder = null;
+        if (playerCreator != null) {
+            playerCreator.stopListening();
+            playerCreator = null;
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.shinezzl.bettervlcplayer.Enums;
+package com.shinezzl.bettervlcplayer.enums;
 
 public enum HwAcc {
 
