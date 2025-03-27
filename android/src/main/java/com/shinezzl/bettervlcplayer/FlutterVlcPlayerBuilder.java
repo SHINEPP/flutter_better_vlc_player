@@ -38,11 +38,12 @@ public class FlutterVlcPlayerBuilder implements Messages.VlcPlayerApi {
     }
 
     void startListening() {
+        disposeAllPlayers();
         Messages.VlcPlayerApi.setup(messenger, this);
     }
 
     void stopListening() {
-        // disposeAllPlayers();
+        disposeAllPlayers();
         Messages.VlcPlayerApi.setup(messenger, null);
     }
 
