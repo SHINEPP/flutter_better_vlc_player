@@ -19,7 +19,14 @@ public class VlcPlayerCreator: NSObject, VlcPlayerApi{
     
     // 返回给flutter层，player已经创建好的
     public func retPlayer(viewId: Int64) -> VlcPlayer {
-      return players[Int(viewId)]!
+        return players[Int(viewId)]!
+    }
+    
+    public func disposePlayers() {
+        for player in players {
+            player.dispose()
+        }
+        
     }
     
     func newPlayer() -> VlcPlayer {
@@ -70,12 +77,6 @@ public class VlcPlayerCreator: NSObject, VlcPlayerApi{
         let message: LongMessage = LongMessage()
         message.result = NSNumber(value:player.viewId())
         return message
-    }
-    
-    public func dispose(_ input: ViewMessage, error: AutoreleasingUnsafeMutablePointer<FlutterError?>) {
-        let player = getPlayer(viewId: input.viewId)
-        player?.dispose()
-        players.removeValue(forKey: input.viewId as! Int)
     }
     
     public func setStreamUrl(_ input: SetMediaMessage, error: AutoreleasingUnsafeMutablePointer<FlutterError?>) {
@@ -445,5 +446,11 @@ public class VlcPlayerCreator: NSObject, VlcPlayerApi{
         let message: BooleanMessage = BooleanMessage()
         message.result = player?.stopRecording()
         return message
+    }
+    
+    public func dispose(_ input: ViewMessage, error: AutoreleasingUnsafeMutablePointer<FlutterError?>) {
+        let player = getPlayer(viewId: input.viewId)
+        player?.dispose()
+        players.removeValue(forKey: input.viewId as! Int)
     }
 }

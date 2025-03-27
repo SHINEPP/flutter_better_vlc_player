@@ -21,4 +21,8 @@ public class VLCViewFactory: NSObject, FlutterPlatformViewFactory {
     public func createArgsCodec() -> FlutterMessageCodec & NSObjectProtocol {
         return FlutterStandardMessageCodec.sharedInstance()
     }
+    
+    public func detachFromEngine(for registrar: any FlutterPluginRegistrar) {
+        playerCreator.disposePlayers()
+    }
 }
