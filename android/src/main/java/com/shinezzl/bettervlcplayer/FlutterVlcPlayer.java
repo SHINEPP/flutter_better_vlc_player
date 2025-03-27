@@ -82,23 +82,13 @@ final class FlutterVlcPlayer {
         mediaPlayer = new MediaPlayer(libVLC);
         mediaPlayer.setEventListener(this::handleMediaPlayerEvent);
 
-        //mediaPlayer.getVLCVout().setWindowSize(854, 480);
-        //mediaPlayer.getVLCVout().setWindowSize(textureView.getWidth(), textureView.getHeight());
         mediaPlayer.getVLCVout().setVideoSurface(textureEntry.surfaceTexture());
         mediaPlayer.getVLCVout().attachViews();
-        //mediaPlayer.setVideoTrackEnabled(true);
-
-        setDefaultBufferSize(854, 480);
+        mediaPlayer.setVideoTrackEnabled(true);
     }
 
     public long getTextureId() {
         return textureEntry.id();
-    }
-
-    public void setDefaultBufferSize(int width, int height) {
-        textureEntry.surfaceTexture().setDefaultBufferSize(width, height);
-        mediaPlayer.setAspectRatio(width + ":" + height);
-        mediaPlayer.getVLCVout().setWindowSize(width, height);
     }
 
     private void handleMediaPlayerEvent(MediaPlayer.Event event) {
@@ -111,7 +101,7 @@ final class FlutterVlcPlayer {
         if (currentVideoTrack != null) {
             height = currentVideoTrack.height;
             width = currentVideoTrack.width;
-            //Log.d(TAG, "handleMediaPlayerEvent(), width = " + width + ", height = " + height);
+            textureEntry.surfaceTexture().setDefaultBufferSize(width, height);
         }
 
         switch (event.type) {
