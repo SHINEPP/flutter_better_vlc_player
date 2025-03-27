@@ -165,7 +165,7 @@ static NSDictionary<NSString*, id>* wrapResult(NSDictionary *result, FlutterErro
   return result;
 }
 -(NSDictionary*)toMap {
-  return [NSDictionary dictionaryWithObjectsAndKeys:(self.viewId ? self.viewId : [NSNull null]), @"viewId", (self.uri ? self.uri : [NSNull null]), @"uri", (self.type ? self.type : [NSNull null]), @"type", (self.packageName ? self.packageName : [NSNull null]), @"packageName", (self.autoPlay ? self.autoPlay : [NSNull null]), @"autoPlay", (self.hwAcc ? self.hwAcc : [NSNull null]), @"hwAcc", (self.options ? self.options : [NSNull null]), @"options", nil];
+  return [NSDictionary dictionaryWithObjectsAndKeys:(self.uri ? self.uri : [NSNull null]), @"uri", (self.type ? self.type : [NSNull null]), @"type", (self.packageName ? self.packageName : [NSNull null]), @"packageName", (self.autoPlay ? self.autoPlay : [NSNull null]), @"autoPlay", (self.hwAcc ? self.hwAcc : [NSNull null]), @"hwAcc", (self.options ? self.options : [NSNull null]), @"options", nil];
 }
 @end
 

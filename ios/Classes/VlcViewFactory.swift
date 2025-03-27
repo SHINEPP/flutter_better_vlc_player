@@ -13,7 +13,7 @@ public class VLCViewFactory: NSObject, FlutterPlatformViewFactory {
     }
     
     public func create(withFrame frame: CGRect, viewIdentifier viewId: Int64, arguments args: Any?) -> FlutterPlatformView {
-        // let arguments = args as? NSDictionary ?? [:]
+        let arguments = args as? NSDictionary ?? [:]
         return builder.build(frame: frame, viewId: viewId)
     }
     

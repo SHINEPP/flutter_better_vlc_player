@@ -11,6 +11,7 @@ NS_ASSUME_NONNULL_BEGIN
 @class ViewMessage;
 @class SetMediaMessage;
 @class BooleanMessage;
+@class LongMessage;
 @class LoopingMessage;
 @class PositionMessage;
 @class DurationMessage;

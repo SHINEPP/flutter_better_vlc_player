@@ -4,9 +4,11 @@ import MobileVLCKit
 import UIKit
 
 
-public class VLCViewController: NSObject, FlutterPlatformView {
+public class VlcPlayer: NSObject, FlutterPlatformView {
     
+    var hostedViewId: Int64
     var hostedView: UIView
+    
     var vlcMediaPlayer: VLCMediaPlayer
     var mediaEventChannel: FlutterEventChannel
     let mediaEventChannelHandler: VLCPlayerEventStreamHandler
@@ -14,12 +16,15 @@ public class VLCViewController: NSObject, FlutterPlatformView {
     let rendererEventChannelHandler: VLCRendererEventStreamHandler
     var rendererdiscoverers: [VLCRendererDiscoverer] = [VLCRendererDiscoverer]()
     
+    public func viewId() -> Int64 {
+        return hostedViewId
+    }
+    
     public func view() -> UIView {
         return hostedView
     }
     
     init(frame: CGRect, viewId: Int64, messenger:FlutterBinaryMessenger) {
-        
         let mediaEventChannel = FlutterEventChannel(
             name: "flutter_video_plugin/getVideoEvents_\(viewId)",
             binaryMessenger: messenger
@@ -29,6 +34,7 @@ public class VLCViewController: NSObject, FlutterPlatformView {
             binaryMessenger: messenger
         )
         
+        self.hostedViewId = viewId;
         self.hostedView = UIView(frame: frame)
         self.vlcMediaPlayer = VLCMediaPlayer()
         // self.vlcMediaPlayer.libraryInstance.debugLogging = true
