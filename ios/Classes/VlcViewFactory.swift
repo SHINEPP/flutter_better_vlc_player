@@ -3,11 +3,9 @@ import Flutter
 
 public class VLCViewFactory: NSObject, FlutterPlatformViewFactory {
         
-    private var registrar: FlutterPluginRegistrar
     private var playerCreator: VlcPlayerCreator
 
     init(registrar: FlutterPluginRegistrar) {
-        self.registrar = registrar
         self.playerCreator = VlcPlayerCreator(registrar: registrar)
         super.init()
     }
@@ -20,9 +18,5 @@ public class VLCViewFactory: NSObject, FlutterPlatformViewFactory {
     
     public func createArgsCodec() -> FlutterMessageCodec & NSObjectProtocol {
         return FlutterStandardMessageCodec.sharedInstance()
-    }
-    
-    public func detachFromEngine(for registrar: any FlutterPluginRegistrar) {
-        playerCreator.disposePlayers()
     }
 }

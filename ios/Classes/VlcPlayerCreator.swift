@@ -14,6 +14,7 @@ public class VlcPlayerCreator: NSObject, VlcPlayerApi{
         self.messenger = registrar.messenger()
         options = []
         super.init()
+        
         VlcPlayerApiSetup(messenger, self)
     }
     
@@ -22,6 +23,7 @@ public class VlcPlayerCreator: NSObject, VlcPlayerApi{
         return players[Int(viewId)]!
     }
     
+    // 销毁players
     public func disposePlayers() {
         for (id, player) in players {
             player.dispose()
@@ -29,7 +31,7 @@ public class VlcPlayerCreator: NSObject, VlcPlayerApi{
         players.removeAll()
     }
     
-    func newPlayer() -> VlcPlayer {
+    private func newPlayer() -> VlcPlayer {
         viewIdIndex += 1
         let viewId = NSNumber(value: viewIdIndex).int64Value;
         let player = VlcPlayer(viewId: viewId, messenger: messenger)
@@ -37,7 +39,7 @@ public class VlcPlayerCreator: NSObject, VlcPlayerApi{
         return player;
     }
 
-    func getPlayer(viewId: NSNumber?) -> VlcPlayer? {
+    private func getPlayer(viewId: NSNumber?) -> VlcPlayer? {
       guard viewId != nil else {
         return nil
       }
