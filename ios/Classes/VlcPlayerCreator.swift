@@ -1,7 +1,7 @@
 import Foundation
 import Flutter
 
-public class VlcPlayerCreator: NSObject, VlcPlayerApi{
+public class VlcPlayerCreator: NSObject, VlcPlayerApi {
     var players = [Int:VlcPlayer]()
     var viewIdIndex = -1
 

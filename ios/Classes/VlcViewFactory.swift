@@ -5,8 +5,8 @@ public class VLCViewFactory: NSObject, FlutterPlatformViewFactory {
         
     private var playerCreator: VlcPlayerCreator
 
-    init(registrar: FlutterPluginRegistrar) {
-        self.playerCreator = VlcPlayerCreator(registrar: registrar)
+    init(registrar: FlutterPluginRegistrar, playerCreator: VlcPlayerCreator) {
+        self.playerCreator = playerCreator
         super.init()
     }
     
