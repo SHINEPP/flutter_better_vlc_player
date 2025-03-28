@@ -923,21 +923,6 @@ class VlcPlayerController extends ValueNotifier<VlcPlayerValue> {
     return VlcPlayerPlatform.instance.stopRecording(_viewId);
   }
 
-  /// [functionName] - name of function
-  /// throw exception if vlc player controller is not initialized
-  void _throwIfNotInitialized(String functionName) {
-    if (!value.isInitialized) {
-      throw Exception(
-        '$functionName() was called on an uninitialized VlcPlayerController.',
-      );
-    }
-    if (_isDisposed) {
-      throw Exception(
-        '$functionName() was called on a disposed VlcPlayerController.',
-      );
-    }
-  }
-
   /// Dispose controller
   @override
   Future<void> dispose() async {
@@ -952,6 +937,21 @@ class VlcPlayerController extends ValueNotifier<VlcPlayerValue> {
 
     await VlcPlayerPlatform.instance.dispose(_viewId);
     super.dispose();
+  }
+
+  /// [functionName] - name of function
+  /// throw exception if vlc player controller is not initialized
+  void _throwIfNotInitialized(String functionName) {
+    if (!value.isInitialized) {
+      throw Exception(
+        '$functionName() was called on an uninitialized VlcPlayerController.',
+      );
+    }
+    if (_isDisposed) {
+      throw Exception(
+        '$functionName() was called on a disposed VlcPlayerController.',
+      );
+    }
   }
 }
 
