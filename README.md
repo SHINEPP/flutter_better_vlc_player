@@ -1,6 +1,6 @@
 # flutter_better_vlc_player
 
-A video player base vlc.
+A video player base VLC.
 
 ## Getting Started
 
