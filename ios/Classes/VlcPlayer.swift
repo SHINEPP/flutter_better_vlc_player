@@ -6,17 +6,18 @@ import UIKit
 
 public class VlcPlayer: NSObject, FlutterPlatformView {
     
-    var hostedViewId: Int64
-    var hostedView: UIView
+    private let _viewId: Int64
+    private let _view: UIView
+    private let options: [String]
     
-    var vlcMediaPlayer: VLCMediaPlayer
-    var mediaEventChannel: FlutterEventChannel
-    let mediaEventChannelHandler: VLCPlayerEventStreamHandler
-    var rendererEventChannel: FlutterEventChannel
-    let rendererEventChannelHandler: VLCRendererEventStreamHandler
-    var rendererdiscoverers: [VLCRendererDiscoverer] = [VLCRendererDiscoverer]()
+    private let vlcMediaPlayer: VLCMediaPlayer
+    private let mediaEventChannel: FlutterEventChannel
+    private let mediaEventChannelHandler: VLCPlayerEventStreamHandler
+    private let rendererEventChannel: FlutterEventChannel
+    private let rendererEventChannelHandler: VLCRendererEventStreamHandler
+    private var rendererdiscoverers: [VLCRendererDiscoverer] = [VLCRendererDiscoverer]()
     
-    init(viewId: Int64, messenger: FlutterBinaryMessenger) {
+    init(viewId: Int64, messenger: FlutterBinaryMessenger, options: [String]) {
         let mediaEventChannel = FlutterEventChannel(
             name: "flutter_video_plugin/getVideoEvents_\(viewId)",
             binaryMessenger: messenger
@@ -26,8 +27,9 @@ public class VlcPlayer: NSObject, FlutterPlatformView {
             binaryMessenger: messenger
         )
         
-        self.hostedViewId = viewId;
-        self.hostedView = UIView(frame: CGRectZero)
+        self._viewId = viewId;
+        self.options = options;
+        self._view = UIView(frame: CGRectZero)
         self.vlcMediaPlayer = VLCMediaPlayer()
         self.mediaEventChannel = mediaEventChannel
         self.mediaEventChannelHandler = VLCPlayerEventStreamHandler()
@@ -36,22 +38,18 @@ public class VlcPlayer: NSObject, FlutterPlatformView {
 
         self.mediaEventChannel.setStreamHandler(mediaEventChannelHandler)
         self.rendererEventChannel.setStreamHandler(rendererEventChannelHandler)
-        self.vlcMediaPlayer.drawable = self.hostedView
+        self.vlcMediaPlayer.drawable = self._view
         self.vlcMediaPlayer.delegate = self.mediaEventChannelHandler
+        
+        super.init()
     }
     
     public func viewId() -> Int64 {
-        return hostedViewId
+        return self._viewId
     }
     
     public func view() -> UIView {
-        return hostedView
-    }
-    
-    public func reHostedView(frame: CGRect) {
-        let view = UIView(frame: frame)
-        self.hostedView = view
-        self.vlcMediaPlayer.drawable = self.hostedView
+        return self._view
     }
     
     public func play() {
@@ -294,7 +292,7 @@ public class VlcPlayer: NSObject, FlutterPlatformView {
         return (!self.vlcMediaPlayer.stopRecording()) as NSNumber
     }
     
-    func setMediaPlayerUrl(uri: String, isAssetUrl: Bool, autoPlay: Bool, hwAcc: Int, options: [String]){
+    func setMediaPlayerUrl(uri: String, isAssetUrl: Bool, autoPlay: Bool, hwAcc: Int){
         self.vlcMediaPlayer.stop()
         
         var media: VLCMedia
@@ -351,12 +349,12 @@ public class VlcPlayer: NSObject, FlutterPlatformView {
     }
     
     public func dispose(){
-        self.mediaEventChannel.setStreamHandler(nil);
-        self.rendererEventChannel.setStreamHandler(nil);
+        self.mediaEventChannel.setStreamHandler(nil)
+        self.rendererEventChannel.setStreamHandler(nil)
         self.rendererdiscoverers.removeAll()
         self.rendererEventChannelHandler.renderItems.removeAll()
         self.vlcMediaPlayer.stop()
-        self.hostedView.removeFromSuperview()
+        self._view.removeFromSuperview()
     }
 }
 
@@ -625,7 +623,6 @@ extension VLCMediaPlayer {
     }
     
     func videoTracks() -> [Int: String]{
-        
         guard let indexs = videoTrackIndexes as? [Int],
               let names = videoTrackNames as? [String],
               indexs.count == names.count
@@ -648,7 +645,6 @@ extension VLCMediaPlayer {
     }
     
     func rendererServices() -> [String]{
-        
         let renderers = VLCRendererDiscoverer.list()
         var services : [String] = []
         

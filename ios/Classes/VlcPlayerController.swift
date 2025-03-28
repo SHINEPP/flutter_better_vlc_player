@@ -1,40 +1,42 @@
 import Foundation
 import Flutter
 
-public class VlcPlayerCreator: NSObject, VlcPlayerApi {
-    var players = [Int:VlcPlayer]()
-    var viewIdIndex = -1
+public class VlcPlayerController: NSObject, VlcPlayerApi {
+    
+    // global view id
+    private static var viewIdIndex = -1
 
-    private var registrar: FlutterPluginRegistrar
-    private var messenger: FlutterBinaryMessenger
-    private var options: [String]
+    private var players = [Int:VlcPlayer]()
+
+    private let registrar: FlutterPluginRegistrar
+    private let messenger: FlutterBinaryMessenger
     
     init(registrar: FlutterPluginRegistrar) {
         self.registrar = registrar
         self.messenger = registrar.messenger()
-        options = []
         super.init()
         
         VlcPlayerApiSetup(messenger, self)
     }
     
-    // 返回给flutter层，player已经创建好的
-    public func retPlayer(viewId: Int64) -> VlcPlayer {
+    // pick player, must not null
+    public func pickPlayer(viewId: Int64) -> VlcPlayer {
         return players[Int(viewId)]!
     }
     
-    // 销毁players
-    public func disposePlayers() {
+    // detach from engine, dispose all players
+    public func detachFromEngine() {
         for (id, player) in players {
             player.dispose()
         }
         players.removeAll()
     }
     
-    private func newPlayer() -> VlcPlayer {
-        viewIdIndex += 1
-        let viewId = NSNumber(value: viewIdIndex).int64Value;
-        let player = VlcPlayer(viewId: viewId, messenger: messenger)
+    private func createNewPlayer(options: [String]) -> VlcPlayer {
+        VlcPlayerController.viewIdIndex += 1
+        let value = NSNumber(value: VlcPlayerController.viewIdIndex)
+        let viewId = value.int64Value;
+        let player = VlcPlayer(viewId: viewId, messenger: messenger, options: options)
         players[Int(viewId)] = player
         return player;
     }
@@ -46,8 +48,10 @@ public class VlcPlayerCreator: NSObject, VlcPlayerApi {
       return players[Int(truncating: viewId! as NSNumber)]
     }
     
+    // above all event channel
     public func create(_ input: CreateMessage, error: AutoreleasingUnsafeMutablePointer<FlutterError?>) -> LongMessage? {
-        let player = newPlayer()
+        let options = input.options as? [String] ?? []
+        let player = createNewPlayer(options: options)
         
         var isAssetUrl: Bool = false
         var mediaUrl: String = ""
@@ -66,14 +70,11 @@ public class VlcPlayerCreator: NSObject, VlcPlayerApi {
             isAssetUrl = false
         }
         
-        options = input.options as? [String] ?? []
-        
         player.setMediaPlayerUrl(
             uri: mediaUrl,
             isAssetUrl: isAssetUrl,
             autoPlay: input.autoPlay?.boolValue ?? true,
-            hwAcc: input.hwAcc?.intValue ?? HWAccellerationType.HW_ACCELERATION_AUTOMATIC.rawValue,
-            options: options
+            hwAcc: input.hwAcc?.intValue ?? HWAccellerationType.HW_ACCELERATION_AUTOMATIC.rawValue
         )
 
         let message: LongMessage = LongMessage()
@@ -104,8 +105,7 @@ public class VlcPlayerCreator: NSObject, VlcPlayerApi {
             uri: mediaUrl,
             isAssetUrl: isAssetUrl,
             autoPlay: input.autoPlay?.boolValue ?? true,
-            hwAcc: input.hwAcc?.intValue ?? HWAccellerationType.HW_ACCELERATION_AUTOMATIC.rawValue,
-            options: options
+            hwAcc: input.hwAcc?.intValue ?? HWAccellerationType.HW_ACCELERATION_AUTOMATIC.rawValue
         )
     }
     

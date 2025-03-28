@@ -1,11 +1,11 @@
 import Foundation
 import Flutter
 
-public class VLCViewFactory: NSObject, FlutterPlatformViewFactory {
+public class VlcPlayerViewFactory: NSObject, FlutterPlatformViewFactory {
         
-    private var playerCreator: VlcPlayerCreator
+    private var playerCreator: VlcPlayerController
 
-    init(registrar: FlutterPluginRegistrar, playerCreator: VlcPlayerCreator) {
+    init(registrar: FlutterPluginRegistrar, playerCreator: VlcPlayerController) {
         self.playerCreator = playerCreator
         super.init()
     }
@@ -13,8 +13,7 @@ public class VLCViewFactory: NSObject, FlutterPlatformViewFactory {
     public func create(withFrame frame: CGRect, viewIdentifier viewId: Int64, arguments args: Any?) -> FlutterPlatformView {
         let arguments = args as? NSDictionary ?? [:]
         let rViewId = (arguments["viewId"] as? NSNumber)?.int64Value ?? -1;
-        let player = playerCreator.retPlayer(viewId: rViewId)
-        player.reHostedView(frame: frame)
+        let player = playerCreator.pickPlayer(viewId: rViewId)
         return player
     }
     

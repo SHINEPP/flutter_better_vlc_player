@@ -19,6 +19,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
 
+    debugPrint("MyApp, initState()");
     _controller = VlcPlayerController.network(
       'https://media.w3.org/2010/05/sintel/trailer.mp4',
     );
@@ -27,6 +28,8 @@ class _MyAppState extends State<MyApp> {
   @override
   void dispose() {
     super.dispose();
+
+    debugPrint("MyApp, dispose()");
     _controller.dispose();
   }
 
