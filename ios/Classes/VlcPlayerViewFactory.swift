@@ -3,17 +3,17 @@ import Flutter
 
 public class VlcPlayerViewFactory: NSObject, FlutterPlatformViewFactory {
         
-    private var playerCreator: VlcPlayerController
+    private var playerController: VlcPlayerController
 
     init(registrar: FlutterPluginRegistrar, playerCreator: VlcPlayerController) {
-        self.playerCreator = playerCreator
+        self.playerController = playerCreator
         super.init()
     }
     
     public func create(withFrame frame: CGRect, viewIdentifier viewId: Int64, arguments args: Any?) -> FlutterPlatformView {
         let arguments = args as? NSDictionary ?? [:]
         let rViewId = (arguments["viewId"] as? NSNumber)?.int64Value ?? -1;
-        let player = playerCreator.pickPlayer(viewId: rViewId)
+        let player = playerController.pickPlayer(viewId: rViewId, withFrame: frame, viewIdentifier: viewId)
         return player
     }
     
