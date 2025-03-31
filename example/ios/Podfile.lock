@@ -6,11 +6,17 @@ PODS:
   - integration_test (0.0.1):
     - Flutter
   - MobileVLCKit (3.6.1b1)
+  - package_info_plus (0.4.5):
+    - Flutter
+  - wakelock_plus (0.0.1):
+    - Flutter
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_better_vlc_player (from `.symlinks/plugins/flutter_better_vlc_player/ios`)
   - integration_test (from `.symlinks/plugins/integration_test/ios`)
+  - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
+  - wakelock_plus (from `.symlinks/plugins/wakelock_plus/ios`)
 
 SPEC REPOS:
   trunk:
@@ -23,12 +29,18 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_better_vlc_player/ios"
   integration_test:
     :path: ".symlinks/plugins/integration_test/ios"
+  package_info_plus:
+    :path: ".symlinks/plugins/package_info_plus/ios"
+  wakelock_plus:
+    :path: ".symlinks/plugins/wakelock_plus/ios"
 
 SPEC CHECKSUMS:
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   flutter_better_vlc_player: 7a70f4719b88d8c9d4793b82a4b5b37f27f388c9
   integration_test: 252f60fa39af5e17c3aa9899d35d908a0721b573
   MobileVLCKit: 2d9c7c373393ae43086aeeff890bf0b1afc15c5c
+  package_info_plus: c0502532a26c7662a62a356cebe2692ec5fe4ec4
+  wakelock_plus: 373cfe59b235a6dd5837d0fb88791d2f13a90d56
 
 PODFILE CHECKSUM: 4305caec6b40dde0ae97be1573c53de1882a07e5
 
