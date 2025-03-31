@@ -18,6 +18,8 @@ class VideoPlayer extends StatefulWidget {
 class _VideoPlayerState extends State<VideoPlayer> with WidgetsBindingObserver {
   late VlcPlayerController _controller;
 
+  static final _aspectRatio = 16 / 9;
+
   @override
   void initState() {
     super.initState();
@@ -48,6 +50,7 @@ class _VideoPlayerState extends State<VideoPlayer> with WidgetsBindingObserver {
       DeviceOrientation.portraitDown,
     ]);
     await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    setState(() {});
   }
 
   @override
@@ -68,16 +71,20 @@ class _VideoPlayerState extends State<VideoPlayer> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: double.infinity,
       color: Colors.black,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          VlcPlayer(
-            controller: _controller,
-            aspectRatio: 16 / 9,
-            placeholder: CupertinoActivityIndicator(
-              radius: 14,
-              color: Colors.white,
+          Hero(
+            tag: _controller,
+            child: VlcPlayer(
+              controller: _controller,
+              aspectRatio: _aspectRatio,
+              placeholder: CupertinoActivityIndicator(
+                radius: 14,
+                color: Colors.white,
+              ),
             ),
           ),
           VideoControls(

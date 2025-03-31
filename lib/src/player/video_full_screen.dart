@@ -20,6 +20,7 @@ class _VideoFullScreenState extends State<VideoFullScreen> {
   Timer? _hideControlsTimer;
 
   void _toggleControls() {
+    debugPrint("1234567890");
     _hideControlsTimer?.cancel();
 
     setState(() {
@@ -28,13 +29,17 @@ class _VideoFullScreenState extends State<VideoFullScreen> {
     });
 
     _hideControlsTimer = Timer(Duration(seconds: 3), () {
-      setState(() {
-        _controlsOpacity = 0.0;
-      });
-      Future.delayed(Duration(milliseconds: 500), () {
+      if (mounted) {
         setState(() {
-          _showControls = false;
+          _controlsOpacity = 0.0;
         });
+      }
+      Future.delayed(Duration(milliseconds: 500), () {
+        if (mounted) {
+          setState(() {
+            _showControls = false;
+          });
+        }
       });
     });
   }
@@ -51,38 +56,43 @@ class _VideoFullScreenState extends State<VideoFullScreen> {
     final aspectRatio = size.width / size.height;
     return Scaffold(
       backgroundColor: Colors.black,
-      body: GestureDetector(
-        onTap: _toggleControls,
-        child: Stack(
-          children: [
-            VlcPlayer(
-              controller: widget.controller,
-              aspectRatio: aspectRatio,
-              placeholder: CupertinoActivityIndicator(
-                radius: 14,
-                color: Colors.white,
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: _toggleControls,
+            child: Hero(
+              tag: widget.controller,
+              child: VlcPlayer(
+                controller: widget.controller,
+                aspectRatio: aspectRatio,
+                placeholder: CupertinoActivityIndicator(
+                  radius: 14,
+                  color: Colors.white,
+                ),
               ),
             ),
-            Visibility(
-              visible: _showControls,
-              child: Container(
-                alignment: Alignment.bottomCenter,
-                child: SafeArea(
-                  child: AnimatedOpacity(
-                    opacity: _controlsOpacity,
-                    duration: Duration(milliseconds: 500),
-                    child: VideoControls(
-                      controller: widget.controller,
-                      onTapFullScreen: () {
-                        Navigator.pop(context);
-                      },
-                    ),
+          ),
+          Visibility(
+            visible: _showControls,
+            child: Container(
+              alignment: Alignment.bottomCenter,
+              child: SafeArea(
+                child: AnimatedOpacity(
+                  opacity: _controlsOpacity,
+                  duration: Duration(milliseconds: 500),
+                  child: VideoControls(
+                    controller: widget.controller,
+                    onTapFullScreen: () {
+                      Navigator.pop(context);
+                    },
                   ),
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
