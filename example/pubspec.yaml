@@ -29,6 +29,9 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
 
+  # keep screen on
+  wakelock_plus: ^1.2.10
+
 dev_dependencies:
   integration_test:
     sdk: flutter
