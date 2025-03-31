@@ -2,12 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_better_vlc_player/flutter_better_vlc_player.dart';
-import 'package:flutter_better_vlc_player_example/videoplayer/video_controls.dart';
-import 'package:flutter_better_vlc_player_example/videoplayer/video_full_screen.dart';
+import 'package:flutter_better_vlc_player/src/player/video_controls.dart';
+import 'package:flutter_better_vlc_player/src/player/video_full_screen.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 class VideoPlayer extends StatefulWidget {
-  const VideoPlayer({super.key});
+  const VideoPlayer({super.key, required this.controller});
+
+  final VlcPlayerController controller;
 
   @override
   State<VideoPlayer> createState() => _VideoPlayerState();
@@ -21,10 +23,7 @@ class _VideoPlayerState extends State<VideoPlayer> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
 
-    debugPrint("MyApp, initState()");
-    _controller = VlcPlayerController.network(
-      'https://media.w3.org/2010/05/sintel/trailer.mp4',
-    );
+    _controller = widget.controller;
   }
 
   _onPushFullScreen(BuildContext context) async {
@@ -54,7 +53,6 @@ class _VideoPlayerState extends State<VideoPlayer> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.detached) {
-      debugPrint("MyApp, didChangeAppLifecycleState(), detached");
       _controller.dispose();
     }
   }
@@ -64,7 +62,6 @@ class _VideoPlayerState extends State<VideoPlayer> with WidgetsBindingObserver {
     super.dispose();
     WidgetsBinding.instance.removeObserver(this);
 
-    debugPrint("MyApp, dispose()");
     _controller.dispose();
   }
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_better_vlc_player_example/videoplayer/video_player.dart';
+import 'package:flutter_better_vlc_player/flutter_better_vlc_player.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,11 +13,22 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  final _key = UniqueKey();
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Scaffold(body: SafeArea(child: VideoPlayer())),
+      home: Scaffold(
+        body: SafeArea(
+          child: VideoPlayer(
+            key: _key,
+            controller: VlcPlayerController.network(
+              'https://media.w3.org/2010/05/sintel/trailer.mp4',
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

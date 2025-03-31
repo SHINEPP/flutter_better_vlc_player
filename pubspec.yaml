@@ -11,7 +11,9 @@ dependencies:
   flutter:
     sdk: flutter
   plugin_platform_interface: ^2.0.2
-  meta: ^1.16.0
+
+  # keep screen on
+  wakelock_plus: ^1.2.10
 
 dev_dependencies:
   flutter_test:
