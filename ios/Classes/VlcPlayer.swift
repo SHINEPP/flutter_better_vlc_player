@@ -8,7 +8,6 @@ public class VlcPlayer: NSObject, FlutterPlatformView {
     
     private let _viewId: Int64
     private var _view: UIView
-    private var _vid: Int64
     private let options: [String]
     
     private let vlcMediaPlayer: VLCMediaPlayer
@@ -31,7 +30,6 @@ public class VlcPlayer: NSObject, FlutterPlatformView {
         self._viewId = viewId;
         self.options = options;
         self._view = UIView(frame: CGRectZero)
-        self._vid = -1
         self.vlcMediaPlayer = VLCMediaPlayer()
         self.mediaEventChannel = mediaEventChannel
         self.mediaEventChannelHandler = VLCPlayerEventStreamHandler()
@@ -52,23 +50,6 @@ public class VlcPlayer: NSObject, FlutterPlatformView {
     
     public func view() -> UIView {
         return self._view
-    }
-    
-    public func newAttach(withFrame frame: CGRect, viewIdentifier vId: Int64) {
-        if (self._vid != vId) {
-            self._view.removeFromSuperview()
-            self._view = UIView(frame: frame)
-            self._vid = vId
-            let isPlaying = self.vlcMediaPlayer.isPlaying
-            if (isPlaying) {
-                self.vlcMediaPlayer.pause()
-            }
-            self.vlcMediaPlayer.drawable = nil
-            self.vlcMediaPlayer.drawable = self._view
-            if (isPlaying) {
-                self.vlcMediaPlayer.play()
-            }
-        }
     }
     
     public func play() {
@@ -372,6 +353,7 @@ public class VlcPlayer: NSObject, FlutterPlatformView {
         self.rendererEventChannel.setStreamHandler(nil)
         self.rendererdiscoverers.removeAll()
         self.rendererEventChannelHandler.renderItems.removeAll()
+        self.vlcMediaPlayer.stopRecording()
         self.vlcMediaPlayer.stop()
         self.vlcMediaPlayer.drawable = nil
         self._view.removeFromSuperview()

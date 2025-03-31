@@ -20,15 +20,13 @@ public class VlcPlayerController: NSObject, VlcPlayerApi {
     }
     
     // pick player, must not null
-    public func pickPlayer(viewId: Int64, withFrame frame: CGRect, viewIdentifier vId: Int64) -> VlcPlayer {
-        let player = players[Int(viewId)]!
-        player.newAttach(withFrame: frame, viewIdentifier: vId)
-        return player
+    public func pickPlayer(viewId: Int64) -> VlcPlayer {
+        return players[Int(viewId)]!
     }
     
     // detach from engine, dispose all players
     public func detachFromEngine() {
-        for (id, player) in players {
+        for (_, player) in players {
             player.dispose()
         }
         players.removeAll()
