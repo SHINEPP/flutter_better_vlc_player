@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_better_vlc_player/flutter_better_vlc_player.dart';
+import 'package:flutter_better_vlc_player/src/core/vlc_player_controller.dart';
 
 class VlcPlayer extends StatefulWidget {
   const VlcPlayer({
@@ -38,10 +39,10 @@ class VlcPlayerState extends State<VlcPlayer> {
     _viewId = widget.controller.viewId;
     // Need to listen for initialization events since the actual initialization value
     // becomes available after asynchronous initialization finishes.
-    widget.controller.addListener(_onVideoEventListener);
+    widget.controller.addOnInitListener(_onVideoInitListener);
   }
 
-  _onVideoEventListener() {
+  _onVideoInitListener() {
     if (!mounted) {
       return;
     }
@@ -59,17 +60,17 @@ class VlcPlayerState extends State<VlcPlayer> {
   void didUpdateWidget(VlcPlayer oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.controller != widget.controller) {
-      oldWidget.controller.removeListener(_onVideoEventListener);
+      oldWidget.controller.removeListener(_onVideoInitListener);
       _isInitialized = widget.controller.value.isInitialized;
       _viewId = widget.controller.viewId;
-      widget.controller.addListener(_onVideoEventListener);
+      widget.controller.addListener(_onVideoInitListener);
     }
   }
 
   @override
-  void deactivate() {
-    super.deactivate();
-    widget.controller.removeListener(_onVideoEventListener);
+  void dispose() {
+    super.dispose();
+    widget.controller.removeListener(_onVideoInitListener);
   }
 
   @override

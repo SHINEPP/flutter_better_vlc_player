@@ -4,7 +4,8 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_better_vlc_player/flutter_better_vlc_player.dart';
-import 'package:flutter_better_vlc_player/src/player/vlc_app_life_cycle_observer.dart';
+import 'package:flutter_better_vlc_player/src/core/vlc_app_life_cycle_observer.dart';
+import 'package:flutter_better_vlc_player/src/core/vlc_player_value.dart';
 
 /// Controls a platform vlc player, and provides updates when the state is
 /// changing.
@@ -65,6 +66,56 @@ class VlcPlayerController extends ValueNotifier<VlcPlayerValue> {
 
   final _initCompleter = Completer<void>();
 
+  factory VlcPlayerController.asset(
+    String dataSource, {
+    bool allowBackgroundPlayback = false,
+    String? package,
+    HwAcc hwAcc = HwAcc.auto,
+    bool autoPlay = true,
+    VlcPlayerOptions? options,
+  }) => VlcPlayerController(
+    dataSource: dataSource,
+    dataSourceType: DataSourceType.asset,
+    allowBackgroundPlayback: allowBackgroundPlayback,
+    package: package,
+    hwAcc: hwAcc,
+    autoPlay: autoPlay,
+    options: options,
+  );
+
+  factory VlcPlayerController.network(
+    String dataSource, {
+    bool allowBackgroundPlayback = false,
+    String? package,
+    HwAcc hwAcc = HwAcc.auto,
+    bool autoPlay = true,
+    VlcPlayerOptions? options,
+  }) => VlcPlayerController(
+    dataSource: dataSource,
+    dataSourceType: DataSourceType.network,
+    allowBackgroundPlayback: allowBackgroundPlayback,
+    package: package,
+    hwAcc: hwAcc,
+    autoPlay: autoPlay,
+    options: options,
+  );
+
+  factory VlcPlayerController.file(
+    File file, {
+    bool allowBackgroundPlayback = true,
+    HwAcc hwAcc = HwAcc.auto,
+    bool autoPlay = true,
+    VlcPlayerOptions? options,
+  }) => VlcPlayerController(
+    dataSource: 'file://${file.path}',
+    dataSourceType: DataSourceType.file,
+    allowBackgroundPlayback: allowBackgroundPlayback,
+    package: null,
+    hwAcc: hwAcc,
+    autoPlay: autoPlay,
+    options: options,
+  );
+
   VlcPlayerController({
     required this.dataSource,
     required DataSourceType dataSourceType,
@@ -76,63 +127,7 @@ class VlcPlayerController extends ValueNotifier<VlcPlayerValue> {
     Duration duration = Duration.zero,
   }) : _dataSourceType = dataSourceType,
        super(VlcPlayerValue(duration: duration)) {
-    _initialize(autoPlay);
-  }
-
-  factory VlcPlayerController.asset(
-    String dataSource, {
-    bool allowBackgroundPlayback = false,
-    String? package,
-    HwAcc hwAcc = HwAcc.auto,
-    bool autoPlay = true,
-    VlcPlayerOptions? options,
-  }) {
-    return VlcPlayerController(
-      dataSource: dataSource,
-      dataSourceType: DataSourceType.asset,
-      allowBackgroundPlayback: allowBackgroundPlayback,
-      package: package,
-      hwAcc: hwAcc,
-      autoPlay: autoPlay,
-      options: options,
-    );
-  }
-
-  factory VlcPlayerController.network(
-    String dataSource, {
-    bool allowBackgroundPlayback = false,
-    String? package,
-    HwAcc hwAcc = HwAcc.auto,
-    bool autoPlay = true,
-    VlcPlayerOptions? options,
-  }) {
-    return VlcPlayerController(
-      dataSource: dataSource,
-      dataSourceType: DataSourceType.network,
-      allowBackgroundPlayback: allowBackgroundPlayback,
-      package: package,
-      hwAcc: hwAcc,
-      autoPlay: autoPlay,
-      options: options,
-    );
-  }
-
-  factory VlcPlayerController.file(
-    File file, {
-    bool allowBackgroundPlayback = true,
-    HwAcc hwAcc = HwAcc.auto,
-    bool autoPlay = true,
-    VlcPlayerOptions? options,
-  }) {
-    return VlcPlayerController(
-      dataSource: 'file://${file.path}',
-      dataSourceType: DataSourceType.file,
-      allowBackgroundPlayback: allowBackgroundPlayback,
-      package: null,
-      hwAcc: hwAcc,
-      autoPlay: autoPlay,
-      options: options,
-    );
+    _init(autoPlay);
   }
 
   /// Register a [VoidCallback] closure to be called when the controller gets initialized
@@ -156,7 +151,7 @@ class VlcPlayerController extends ValueNotifier<VlcPlayerValue> {
   }
 
   /// init
-  _initialize(bool autoPlay) async {
+  Future<void> _init(bool autoPlay) async {
     _viewId = await VlcPlayerPlatform.instance.create(
       uri: dataSource,
       type: dataSourceType,
@@ -165,6 +160,8 @@ class VlcPlayerController extends ValueNotifier<VlcPlayerValue> {
       autoPlay: autoPlay,
       options: options,
     );
+
+    assert(_viewId >= 0, "viewId must create success");
 
     VlcPlayerPlatform.instance
         .mediaEventsFor(_viewId)
@@ -178,9 +175,7 @@ class VlcPlayerController extends ValueNotifier<VlcPlayerValue> {
       _lifeCycleObserver = VlcAppLifeCycleObserver(this)..initialize();
     }
 
-    if (!_initCompleter.isCompleted) {
-      _initCompleter.complete(null);
-    }
+    _initCompleter.complete(null);
 
     value = value.copyWith(
       isInitialized: true,
@@ -432,7 +427,6 @@ class VlcPlayerController extends ValueNotifier<VlcPlayerValue> {
   Future<void> play() async {
     await _initCompleter.future;
     _throwIfNotInitialized('play');
-
     await VlcPlayerPlatform.instance.play(_viewId);
     // This ensures that the correct playback speed is always applied when
     // playing back. This is necessary because we do not set playback speed
@@ -451,6 +445,7 @@ class VlcPlayerController extends ValueNotifier<VlcPlayerValue> {
   Future<void> stop() async {
     await _initCompleter.future;
     _throwIfNotInitialized('stop');
+
     await VlcPlayerPlatform.instance.stop(_viewId);
   }
 
@@ -568,13 +563,11 @@ class VlcPlayerController extends ValueNotifier<VlcPlayerValue> {
     // Setting the playback speed on iOS will trigger the video to play. We
     // prevent this from happening by not applying the playback speed until
     // the video is manually played from Flutter.
-    if (value.isPlaying) {
-      value = value.copyWith(playbackSpeed: speed);
-      await VlcPlayerPlatform.instance.setPlaybackSpeed(
-        _viewId,
-        value.playbackSpeed,
-      );
-    }
+    value = value.copyWith(playbackSpeed: speed);
+    await VlcPlayerPlatform.instance.setPlaybackSpeed(
+      _viewId,
+      value.playbackSpeed,
+    );
   }
 
   /// Returns the vlc playback speed.
