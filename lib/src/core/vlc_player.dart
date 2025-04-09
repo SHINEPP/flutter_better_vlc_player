@@ -77,10 +77,11 @@ class VlcPlayerState extends State<VlcPlayer> {
     return AspectRatio(
       aspectRatio: widget.aspectRatio,
       child: Stack(
+        fit: StackFit.expand,
         children: [
           Offstage(
             offstage: _isInitialized,
-            child: widget.placeholder ?? Container(),
+            child: Center(child: widget.placeholder),
           ),
           Offstage(
             offstage: !_isInitialized,
