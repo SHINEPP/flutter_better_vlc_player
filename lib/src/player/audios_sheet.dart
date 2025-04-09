@@ -18,10 +18,10 @@ class _AudiosSheetState extends State<AudiosSheet> {
   void initState() {
     super.initState();
 
-    _initSubtitles();
+    _initAudios();
   }
 
-  _initSubtitles() async {
+  _initAudios() async {
     final selectedTrack = await widget.controller.getAudioTrack();
     final audioTracks = await widget.controller.getAudioTracks();
     final audios =
@@ -34,9 +34,9 @@ class _AudiosSheetState extends State<AudiosSheet> {
     setState(() {});
   }
 
-  _onTapSubtitle(_Audio subtitle) async {
+  _onTapAudio(_Audio subtitle) async {
     _selectedIndex = _audios.indexOf(subtitle);
-    await widget.controller.setSpuTrack(subtitle.index);
+    await widget.controller.setAudioTrack(subtitle.index);
   }
 
   @override
@@ -74,7 +74,7 @@ class _AudiosSheetState extends State<AudiosSheet> {
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  onTap: () => _onTapSubtitle(_audios[index]),
+                  onTap: () => _onTapAudio(_audios[index]),
                   selectedColor: Colors.blue,
                 );
               },
