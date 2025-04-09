@@ -76,6 +76,22 @@ class _VideoPlayerFullScreenState extends State<VideoPlayerFullScreen> {
           Visibility(
             visible: _showControls,
             child: Container(
+              alignment: Alignment.topLeft,
+              child: SafeArea(
+                child: AnimatedOpacity(
+                  opacity: _controlsOpacity,
+                  duration: Duration(milliseconds: 500),
+                  child: VideoPlayerMenu(
+                    controller: widget.controller,
+                    isFullScreen: true,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Visibility(
+            visible: _showControls,
+            child: Container(
               alignment: Alignment.bottomCenter,
               child: SafeArea(
                 child: AnimatedOpacity(

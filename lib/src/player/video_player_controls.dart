@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_better_vlc_player/flutter_better_vlc_player.dart';
 import 'package:flutter_better_vlc_player/src/player/menu_sheet.dart';
 import 'package:flutter_better_vlc_player/src/player/side_sheet.dart';
-import 'package:flutter_better_vlc_player/src/player/subtitles_sheet.dart';
 
 import 'video_track_shape.dart';
 
@@ -65,14 +64,6 @@ class _VideoPlayerControlsState extends State<VideoPlayerControls> {
     await _controller.setTime(time.toInt());
   }
 
-  void _onTapSubtitles(BuildContext context) {
-    if (widget.isFullScreen) {
-      showRightSideSheet(context, SubtitlesSheet(controller: _controller));
-    } else {
-      showBottomSideSheet(context, SubtitlesSheet(controller: _controller));
-    }
-  }
-
   @override
   void dispose() {
     super.dispose();
@@ -114,12 +105,6 @@ class _VideoPlayerControlsState extends State<VideoPlayerControls> {
             ),
           ),
           Text(duration, style: TextStyle(color: Colors.white, fontSize: 14)),
-          IconButton(
-            iconSize: 40,
-            icon: Icon(Icons.subtitles, size: 24),
-            color: Colors.white,
-            onPressed: () => _onTapSubtitles(context),
-          ),
           IconButton(
             iconSize: 40,
             icon: Icon(
