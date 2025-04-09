@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_better_vlc_player/flutter_better_vlc_player.dart';
+import 'package:flutter_better_vlc_player/src/player/side_sheet.dart';
+import 'package:flutter_better_vlc_player/src/player/subtitles_sheet.dart';
 
 import 'video_track_shape.dart';
 
@@ -8,11 +10,13 @@ class VideoControls extends StatefulWidget {
   const VideoControls({
     super.key,
     required this.controller,
-    required this.onTapFullScreen,
+    required this.onFullScreen,
+    required this.isFullScreen,
   });
 
   final VlcPlayerController controller;
-  final VoidCallback onTapFullScreen;
+  final VoidCallback onFullScreen;
+  final bool isFullScreen;
 
   @override
   State<VideoControls> createState() => _VideoControlsState();
@@ -55,9 +59,17 @@ class _VideoControlsState extends State<VideoControls> {
         : await _controller.play();
   }
 
-  void _onSliderPositionChanged(double progress) async {
+  void _onPositionChanged(double progress) async {
     final time = _controller.value.duration.inMilliseconds * progress;
     await _controller.setTime(time.toInt());
+  }
+
+  void _onTapSubtitles(BuildContext context) {
+    if (widget.isFullScreen) {
+      showRightSideSheet(context, SubtitlesSheet(controller: _controller));
+    } else {
+      showBottomSideSheet(context, SubtitlesSheet(controller: _controller));
+    }
   }
 
   @override
@@ -78,8 +90,8 @@ class _VideoControlsState extends State<VideoControls> {
             iconSize: 40,
             icon:
                 _controller.value.isPlaying
-                    ? Icon(Icons.pause, size: 20)
-                    : Icon(Icons.play_arrow, size: 20),
+                    ? Icon(Icons.pause, size: 24)
+                    : Icon(Icons.play_arrow, size: 24),
             onPressed: _togglePlaying,
           ),
           Text(position, style: TextStyle(color: Colors.white, fontSize: 14)),
@@ -96,16 +108,22 @@ class _VideoControlsState extends State<VideoControls> {
                 value: sliderValue,
                 min: 0.0,
                 max: 1.0,
-                onChanged: _onSliderPositionChanged,
+                onChanged: _onPositionChanged,
               ),
             ),
           ),
           Text(duration, style: TextStyle(color: Colors.white, fontSize: 14)),
           IconButton(
             iconSize: 40,
-            icon: Icon(Icons.fullscreen, size: 20),
+            icon: Icon(Icons.subtitles, size: 24),
             color: Colors.white,
-            onPressed: widget.onTapFullScreen,
+            onPressed: () => _onTapSubtitles(context),
+          ),
+          IconButton(
+            iconSize: 40,
+            icon: Icon(Icons.fullscreen, size: 24),
+            color: Colors.white,
+            onPressed: widget.onFullScreen,
           ),
         ],
       ),

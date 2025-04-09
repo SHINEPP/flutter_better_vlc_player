@@ -20,7 +20,6 @@ class _VideoFullScreenState extends State<VideoFullScreen> {
   Timer? _hideControlsTimer;
 
   void _toggleControls() {
-    debugPrint("1234567890");
     _hideControlsTimer?.cancel();
 
     setState(() {
@@ -84,7 +83,8 @@ class _VideoFullScreenState extends State<VideoFullScreen> {
                   duration: Duration(milliseconds: 500),
                   child: VideoControls(
                     controller: widget.controller,
-                    onTapFullScreen: () {
+                    isFullScreen: true,
+                    onFullScreen: () {
                       Navigator.pop(context);
                     },
                   ),

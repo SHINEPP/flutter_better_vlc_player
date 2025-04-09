@@ -89,7 +89,8 @@ class _VideoPlayerState extends State<VideoPlayer> with WidgetsBindingObserver {
           ),
           VideoControls(
             controller: _controller,
-            onTapFullScreen: () {
+            isFullScreen: false,
+            onFullScreen: () {
               _onPushFullScreen(context);
             },
           ),
