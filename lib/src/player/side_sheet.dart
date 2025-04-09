@@ -35,6 +35,21 @@ Future<T?> showRightSideSheet<T extends Object?>(
   ),
 );
 
+Future<T?> showRightSideSheetWithNavigator<T extends Object?>(
+  BuildContext context,
+  Widget child,
+) => showRightSideSheet(
+  context,
+  ClipRRect(
+    borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    child: Navigator(
+      onGenerateRoute: (settings) {
+        return MaterialPageRoute(builder: (context) => child);
+      },
+    ),
+  ),
+);
+
 /// 底部弹窗
 Future<T?> showBottomSideSheet<T extends Object?>(
   BuildContext context,
@@ -45,4 +60,19 @@ Future<T?> showBottomSideSheet<T extends Object?>(
     borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
   ),
   builder: (context) => child,
+);
+
+Future<T?> showBottomSideSheetWithNavigator<T extends Object?>(
+  BuildContext context,
+  Widget child,
+) => showBottomSideSheet<T>(
+  context,
+  ClipRRect(
+    borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    child: Navigator(
+      onGenerateRoute: (settings) {
+        return MaterialPageRoute(builder: (context) => child);
+      },
+    ),
+  ),
 );

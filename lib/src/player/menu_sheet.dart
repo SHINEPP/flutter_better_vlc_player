@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_better_vlc_player/flutter_better_vlc_player.dart';
-import 'package:flutter_better_vlc_player/src/player/side_sheet.dart';
 import 'package:flutter_better_vlc_player/src/player/subtitles_sheet.dart';
 
 class MenuSheet extends StatelessWidget {
@@ -9,7 +8,12 @@ class MenuSheet extends StatelessWidget {
   final VlcPlayerController controller;
 
   _onTapSubtitles(BuildContext context) {
-    showBottomSideSheet(context, SubtitlesSheet(controller: controller));
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder:
+            (context) => Scaffold(body: SubtitlesSheet(controller: controller)),
+      ),
+    );
   }
 
   _onTapAudios(BuildContext context) {}

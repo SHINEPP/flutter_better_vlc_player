@@ -148,9 +148,15 @@ class VideoPlayerMenu extends StatelessWidget {
 
   void _onTapMenu(BuildContext context) {
     if (isFullScreen) {
-      showRightSideSheet(context, MenuSheet(controller: controller));
+      showRightSideSheetWithNavigator(
+        context,
+        MenuSheet(controller: controller),
+      );
     } else {
-      showBottomSideSheet(context, MenuSheet(controller: controller));
+      showBottomSideSheetWithNavigator(
+        context,
+        MenuSheet(controller: controller),
+      );
     }
   }
 
