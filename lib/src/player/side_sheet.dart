@@ -14,7 +14,7 @@ Future<T?> showRightSideSheet<T extends Object?>(
         (context, animation, secondaryAnimation) => Align(
           alignment: Alignment.centerRight,
           child: FractionallySizedBox(
-            widthFactor: 0.8, // 右侧弹窗宽度比例
+            widthFactor: 0.3, // 右侧弹窗宽度比例
             child: GestureDetector(
               onHorizontalDragUpdate: (details) {
                 if (details.delta.dx > 10) {
