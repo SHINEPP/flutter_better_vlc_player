@@ -31,11 +31,13 @@ class _AudiosSheetState extends State<AudiosSheet> {
     _audios.clear();
     _audios.addAll(audios);
     _selectedIndex = audios.indexWhere((s) => s.index == selectedTrack);
+    debugPrint("_initAudios(), _selectedIndex = $_selectedIndex");
     setState(() {});
   }
 
   _onTapAudio(_Audio subtitle) async {
     _selectedIndex = _audios.indexOf(subtitle);
+    debugPrint("_onTapAudio(), _selectedIndex = $_selectedIndex");
     await widget.controller.setAudioTrack(subtitle.index);
   }
 
@@ -64,18 +66,18 @@ class _AudiosSheetState extends State<AudiosSheet> {
               itemCount: _audios.length,
               padding: EdgeInsets.only(bottom: 60),
               itemBuilder: (context, index) {
+                final selected = index == _selectedIndex;
                 return ListTile(
-                  selected: index == _selectedIndex,
+                  selected: selected,
                   title: Text(
                     _audios[index].title,
                     style: TextStyle(
-                      color: Colors.black,
+                      color: selected ? Colors.blue : Colors.black,
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
                   onTap: () => _onTapAudio(_audios[index]),
-                  selectedColor: Colors.blue,
                 );
               },
             ),

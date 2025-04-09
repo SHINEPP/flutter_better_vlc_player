@@ -36,6 +36,7 @@ class MenuSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
             width: double.infinity,
