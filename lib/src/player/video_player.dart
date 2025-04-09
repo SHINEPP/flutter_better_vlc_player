@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_better_vlc_player/flutter_better_vlc_player.dart';
-import 'package:flutter_better_vlc_player/src/player/video_controls.dart';
-import 'package:flutter_better_vlc_player/src/player/video_full_screen.dart';
+import 'package:flutter_better_vlc_player/src/player/video_player_controls.dart';
+import 'package:flutter_better_vlc_player/src/player/video_player_full_screen.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 class VideoPlayer extends StatefulWidget {
@@ -39,7 +39,7 @@ class _VideoPlayerState extends State<VideoPlayer> with WidgetsBindingObserver {
     if (context.mounted) {
       await Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) => VideoFullScreen(controller: _controller),
+          builder: (context) => VideoPlayerFullScreen(controller: _controller),
         ),
       );
     }
@@ -76,6 +76,7 @@ class _VideoPlayerState extends State<VideoPlayer> with WidgetsBindingObserver {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          VideoPlayerMenu(controller: _controller, isFullScreen: false),
           Hero(
             tag: _controller,
             child: VlcPlayer(
@@ -87,7 +88,7 @@ class _VideoPlayerState extends State<VideoPlayer> with WidgetsBindingObserver {
               ),
             ),
           ),
-          VideoControls(
+          VideoPlayerControls(
             controller: _controller,
             isFullScreen: false,
             onFullScreen: () {

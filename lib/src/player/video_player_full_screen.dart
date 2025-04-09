@@ -3,18 +3,18 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_better_vlc_player/flutter_better_vlc_player.dart';
-import 'package:flutter_better_vlc_player/src/player/video_controls.dart';
+import 'package:flutter_better_vlc_player/src/player/video_player_controls.dart';
 
-class VideoFullScreen extends StatefulWidget {
-  const VideoFullScreen({super.key, required this.controller});
+class VideoPlayerFullScreen extends StatefulWidget {
+  const VideoPlayerFullScreen({super.key, required this.controller});
 
   final VlcPlayerController controller;
 
   @override
-  State<VideoFullScreen> createState() => _VideoFullScreenState();
+  State<VideoPlayerFullScreen> createState() => _VideoPlayerFullScreenState();
 }
 
-class _VideoFullScreenState extends State<VideoFullScreen> {
+class _VideoPlayerFullScreenState extends State<VideoPlayerFullScreen> {
   bool _showControls = false;
   double _controlsOpacity = 0.0;
   Timer? _hideControlsTimer;
@@ -81,7 +81,7 @@ class _VideoFullScreenState extends State<VideoFullScreen> {
                 child: AnimatedOpacity(
                   opacity: _controlsOpacity,
                   duration: Duration(milliseconds: 500),
-                  child: VideoControls(
+                  child: VideoPlayerControls(
                     controller: widget.controller,
                     isFullScreen: true,
                     onFullScreen: () {

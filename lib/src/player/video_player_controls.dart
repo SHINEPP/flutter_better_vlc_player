@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_better_vlc_player/flutter_better_vlc_player.dart';
+import 'package:flutter_better_vlc_player/src/player/menu_sheet.dart';
 import 'package:flutter_better_vlc_player/src/player/side_sheet.dart';
 import 'package:flutter_better_vlc_player/src/player/subtitles_sheet.dart';
 
 import 'video_track_shape.dart';
 
 /// 底部控制
-class VideoControls extends StatefulWidget {
-  const VideoControls({
+class VideoPlayerControls extends StatefulWidget {
+  const VideoPlayerControls({
     super.key,
     required this.controller,
     required this.onFullScreen,
@@ -19,10 +20,10 @@ class VideoControls extends StatefulWidget {
   final bool isFullScreen;
 
   @override
-  State<VideoControls> createState() => _VideoControlsState();
+  State<VideoPlayerControls> createState() => _VideoPlayerControlsState();
 }
 
-class _VideoControlsState extends State<VideoControls> {
+class _VideoPlayerControlsState extends State<VideoPlayerControls> {
   late VlcPlayerController _controller;
 
   double sliderValue = 0.0;
@@ -121,10 +122,52 @@ class _VideoControlsState extends State<VideoControls> {
           ),
           IconButton(
             iconSize: 40,
-            icon: Icon(Icons.fullscreen, size: 24),
+            icon: Icon(
+              widget.isFullScreen ? Icons.fullscreen_exit : Icons.fullscreen,
+              size: 24,
+            ),
             color: Colors.white,
             onPressed: widget.onFullScreen,
           ),
+        ],
+      ),
+    );
+  }
+}
+
+/// 底部控制
+class VideoPlayerMenu extends StatelessWidget {
+  const VideoPlayerMenu({
+    super.key,
+    required this.controller,
+    required this.isFullScreen,
+  });
+
+  final VlcPlayerController controller;
+  final bool isFullScreen;
+
+  void _onTapMenu(BuildContext context) {
+    if (isFullScreen) {
+      showRightSideSheet(context, MenuSheet(controller: controller));
+    } else {
+      showBottomSideSheet(context, MenuSheet(controller: controller));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 40,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          IconButton(
+            iconSize: 40,
+            icon: Icon(Icons.more_vert, size: 24),
+            color: Colors.white,
+            onPressed: () => _onTapMenu(context),
+          ),
+          SizedBox(width: 8),
         ],
       ),
     );

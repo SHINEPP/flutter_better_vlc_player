@@ -41,44 +41,47 @@ class _SubtitlesSheetState extends State<SubtitlesSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          width: double.infinity,
-          height: 40,
-          alignment: Alignment.centerLeft,
-          padding: EdgeInsets.symmetric(horizontal: 16),
-          child: Text(
-            "字幕:",
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
+    return SafeArea(
+      child: Column(
+        children: [
+          Container(
+            width: double.infinity,
+            height: 40,
+            alignment: Alignment.centerLeft,
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            margin: EdgeInsets.only(top: 8),
+            child: Text(
+              "字幕:",
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
-        ),
-        Expanded(
-          child: ListView.builder(
-            itemCount: _subtitles.length,
-            padding: EdgeInsets.only(bottom: 60),
-            itemBuilder: (context, index) {
-              return ListTile(
-                selected: index == _selectedIndex,
-                title: Text(
-                  _subtitles[index].title,
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
+          Expanded(
+            child: ListView.builder(
+              itemCount: _subtitles.length,
+              padding: EdgeInsets.only(bottom: 60),
+              itemBuilder: (context, index) {
+                return ListTile(
+                  selected: index == _selectedIndex,
+                  title: Text(
+                    _subtitles[index].title,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                ),
-                onTap: () => _onTapSubtitle(_subtitles[index]),
-                selectedColor: Colors.blue,
-              );
-            },
+                  onTap: () => _onTapSubtitle(_subtitles[index]),
+                  selectedColor: Colors.blue,
+                );
+              },
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
