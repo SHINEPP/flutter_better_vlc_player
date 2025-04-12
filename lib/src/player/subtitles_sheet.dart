@@ -18,16 +18,17 @@ class _SubtitlesSheetState extends State<SubtitlesSheet> {
   void initState() {
     super.initState();
 
-    _initSubtitles();
+    _updateSubtitles();
   }
 
-  _initSubtitles() async {
+  _updateSubtitles() async {
     final selectedTrack = await widget.controller.getSpuTrack();
     final spuTracks = await widget.controller.getSpuTracks();
     final subtitles =
         spuTracks.entries
             .map((e) => _Subtitle(index: e.key, title: e.value))
             .toList();
+    subtitles.sort((i, j) => i.index - j.index);
     _subtitles.clear();
     _subtitles.addAll(subtitles);
     _selectedIndex = subtitles.indexWhere((s) => s.index == selectedTrack);
@@ -37,6 +38,7 @@ class _SubtitlesSheetState extends State<SubtitlesSheet> {
   _onTapSubtitle(_Subtitle subtitle) async {
     _selectedIndex = _subtitles.indexOf(subtitle);
     await widget.controller.setSpuTrack(subtitle.index);
+    await _updateSubtitles();
   }
 
   @override

@@ -18,16 +18,17 @@ class _AudiosSheetState extends State<AudiosSheet> {
   void initState() {
     super.initState();
 
-    _initAudios();
+    _updateAudios();
   }
 
-  _initAudios() async {
+  _updateAudios() async {
     final selectedTrack = await widget.controller.getAudioTrack();
     final audioTracks = await widget.controller.getAudioTracks();
     final audios =
-        audioTracks.entries
-            .map((e) => _Audio(index: e.key, title: e.value))
-            .toList();
+    audioTracks.entries
+        .map((e) => _Audio(index: e.key, title: e.value))
+        .toList();
+    audios.sort((i, j) => i.index - j.index);
     _audios.clear();
     _audios.addAll(audios);
     _selectedIndex = audios.indexWhere((s) => s.index == selectedTrack);
@@ -39,6 +40,7 @@ class _AudiosSheetState extends State<AudiosSheet> {
     _selectedIndex = _audios.indexOf(subtitle);
     debugPrint("_onTapAudio(), _selectedIndex = $_selectedIndex");
     await widget.controller.setAudioTrack(subtitle.index);
+    await _updateAudios();
   }
 
   @override
