@@ -158,7 +158,6 @@ class VideoPlayerMenu extends StatelessWidget {
             color: Colors.white,
             onPressed: () => _onTapMenu(context),
           ),
-          SizedBox(width: 8),
         ],
       ),
     );
