@@ -45,6 +45,7 @@ class _SubtitlesSheetState extends State<SubtitlesSheet> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             width: double.infinity,
