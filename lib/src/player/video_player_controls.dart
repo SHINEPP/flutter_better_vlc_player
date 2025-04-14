@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_better_vlc_player/flutter_better_vlc_player.dart';
@@ -184,6 +186,72 @@ class GestureVideoPlayer extends StatefulWidget {
 }
 
 class _GestureVideoPlayerState extends State<GestureVideoPlayer> {
+  late VlcPlayerController _controller;
+  final _tip = ValueNotifier<String>("");
+  var _lastPlaybackSpeed = 1.0;
+
+  var _startPosition = 0;
+  var _showPosition = 0;
+  var _totalDuration = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = widget.controller;
+  }
+
+  /// long press
+  void _onLongPressStart() async {
+    _lastPlaybackSpeed = await _controller.getPlaybackSpeed() ?? 1.0;
+    await _controller.setPlaybackSpeed(3);
+    _tip.value = "快进 x3";
+  }
+
+  void _onLongPressEnd() async {
+    await _controller.setPlaybackSpeed(_lastPlaybackSpeed);
+    _tip.value = "";
+  }
+
+  /// left
+  void _onSlideLeftStart() async {
+    final position = await _controller.getPosition();
+    _startPosition = position.inMilliseconds;
+  }
+
+  void _onSlideLeftUpdate(double ratio) async {
+    _showPosition = _startPosition - (30000 * ratio).toInt();
+    final position = Duration(milliseconds: max(_showPosition, 0));
+    final positionText = position.toString().split('.').first.padLeft(8, '0');
+    _tip.value = "快退 $positionText";
+  }
+
+  void _onSlideLeftEnd(double ratio) async {
+    final position = Duration(milliseconds: min(_showPosition, _totalDuration));
+    await _controller.seekTo(position);
+    _tip.value = "";
+  }
+
+  /// right
+  void _onSlideRightStart() async {
+    final position = await _controller.getPosition();
+    final duration = await _controller.getDuration();
+    _startPosition = position.inMilliseconds;
+    _totalDuration = duration.inMilliseconds;
+  }
+
+  void _onSlideRightUpdate(double ratio) async {
+    _showPosition = _startPosition + (30000 * ratio).toInt();
+    final position = Duration(milliseconds: min(_showPosition, _totalDuration));
+    final positionText = position.toString().split('.').first.padLeft(8, '0');
+    _tip.value = "快进 $positionText";
+  }
+
+  void _onSlideRightEnd(double ratio) async {
+    final position = Duration(milliseconds: min(_showPosition, _totalDuration));
+    await _controller.seekTo(position);
+    _tip.value = "";
+  }
+
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
@@ -193,6 +261,14 @@ class _GestureVideoPlayerState extends State<GestureVideoPlayer> {
         children: [
           GestureRecognizer(
             onTap: widget.onTap,
+            onLongPressStart: _onLongPressStart,
+            onLongPressEnd: _onLongPressEnd,
+            onSlideLeftStart: _onSlideLeftStart,
+            onSlideLeftUpdate: _onSlideLeftUpdate,
+            onSlideLeftEnd: _onSlideLeftEnd,
+            onSlideRightStart: _onSlideRightStart,
+            onSlideRightUpdate: _onSlideRightUpdate,
+            onSlideRightEnd: _onSlideRightEnd,
             child: VlcPlayer(
               controller: widget.controller,
               aspectRatio: widget.aspectRatio,
@@ -201,6 +277,27 @@ class _GestureVideoPlayerState extends State<GestureVideoPlayer> {
                 color: Colors.white,
               ),
             ),
+          ),
+          ValueListenableBuilder(
+            valueListenable: _tip,
+            builder: (context, value, child) {
+              return Visibility(
+                visible: true,
+                child: Center(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.black12,
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    child: Text(
+                      value,
+                      style: TextStyle(color: Colors.white, fontSize: 14),
+                    ),
+                  ),
+                ),
+              );
+            },
           ),
         ],
       ),

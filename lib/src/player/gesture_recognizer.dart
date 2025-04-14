@@ -22,18 +22,18 @@ class _GestureDemoState extends State<GestureDemo> {
           onTap: () => _value.value = "点击",
           onLongPressStart: () => _value.value = "长按开始",
           onLongPressEnd: () => _value.value = "长按结束",
-          onSideLeftUpdate: (v) => _value.value = "左滑:$v",
-          onSideLeftEnd: (v) => _value.value = "左滑到:$v",
-          onSideRightUpdate: (v) => _value.value = "右滑:$v",
-          onSideRightEnd: (v) => _value.value = "右滑到:$v",
-          onSideLeftUpUpdate: (v) => _value.value = "左侧上滑:$v",
-          onSideLeftUpEnd: (v) => _value.value = "左侧上滑到:$v",
-          onSideLeftDownUpdate: (v) => _value.value = "左侧下滑:$v",
-          onSideLeftDownEnd: (v) => _value.value = "左侧下滑到:$v",
-          onSideRightUpUpdate: (v) => _value.value = "右侧上滑:$v",
-          onSideRightUpEnd: (v) => _value.value = "右侧上滑到:$v",
-          onSideRightDownUpdate: (v) => _value.value = "右侧下滑:$v",
-          onSideRightDownEnd: (v) => _value.value = "右侧下滑到:$v",
+          onSlideLeftUpdate: (v) => _value.value = "左滑:$v",
+          onSlideLeftEnd: (v) => _value.value = "左滑到:$v",
+          onSlideRightUpdate: (v) => _value.value = "右滑:$v",
+          onSlideRightEnd: (v) => _value.value = "右滑到:$v",
+          onSlideLeftUpUpdate: (v) => _value.value = "左侧上滑:$v",
+          onSlideLeftUpEnd: (v) => _value.value = "左侧上滑到:$v",
+          onSlideLeftDownUpdate: (v) => _value.value = "左侧下滑:$v",
+          onSlideLeftDownEnd: (v) => _value.value = "左侧下滑到:$v",
+          onSlideRightUpUpdate: (v) => _value.value = "右侧上滑:$v",
+          onSlideRightUpEnd: (v) => _value.value = "右侧上滑到:$v",
+          onSlideRightDownUpdate: (v) => _value.value = "右侧下滑:$v",
+          onSlideRightDownEnd: (v) => _value.value = "右侧下滑到:$v",
           child: Container(
             color: Colors.grey,
             alignment: Alignment.center,
@@ -58,36 +58,48 @@ class GestureRecognizer extends StatefulWidget {
     this.onTap,
     this.onLongPressStart,
     this.onLongPressEnd,
-    this.onSideLeftUpdate,
-    this.onSideLeftEnd,
-    this.onSideRightUpdate,
-    this.onSideRightEnd,
-    this.onSideLeftUpUpdate,
-    this.onSideLeftUpEnd,
-    this.onSideLeftDownUpdate,
-    this.onSideLeftDownEnd,
-    this.onSideRightUpUpdate,
-    this.onSideRightUpEnd,
-    this.onSideRightDownUpdate,
-    this.onSideRightDownEnd,
+    this.onSlideLeftStart,
+    this.onSlideLeftUpdate,
+    this.onSlideLeftEnd,
+    this.onSlideRightStart,
+    this.onSlideRightUpdate,
+    this.onSlideRightEnd,
+    this.onSlideLeftUpStart,
+    this.onSlideLeftUpUpdate,
+    this.onSlideLeftUpEnd,
+    this.onSlideLeftDownStart,
+    this.onSlideLeftDownUpdate,
+    this.onSlideLeftDownEnd,
+    this.onSlideRightUpStart,
+    this.onSlideRightUpUpdate,
+    this.onSlideRightUpEnd,
+    this.onSlideRightDownStart,
+    this.onSlideRightDownUpdate,
+    this.onSlideRightDownEnd,
     required this.child,
   });
 
   final VoidCallback? onTap;
   final VoidCallback? onLongPressStart;
   final VoidCallback? onLongPressEnd;
-  final ValueChanged<double>? onSideLeftUpdate;
-  final ValueChanged<double>? onSideLeftEnd;
-  final ValueChanged<double>? onSideRightUpdate;
-  final ValueChanged<double>? onSideRightEnd;
-  final ValueChanged<double>? onSideLeftUpUpdate;
-  final ValueChanged<double>? onSideLeftUpEnd;
-  final ValueChanged<double>? onSideLeftDownUpdate;
-  final ValueChanged<double>? onSideLeftDownEnd;
-  final ValueChanged<double>? onSideRightUpUpdate;
-  final ValueChanged<double>? onSideRightUpEnd;
-  final ValueChanged<double>? onSideRightDownUpdate;
-  final ValueChanged<double>? onSideRightDownEnd;
+  final VoidCallback? onSlideLeftStart;
+  final ValueChanged<double>? onSlideLeftUpdate;
+  final ValueChanged<double>? onSlideLeftEnd;
+  final VoidCallback? onSlideRightStart;
+  final ValueChanged<double>? onSlideRightUpdate;
+  final ValueChanged<double>? onSlideRightEnd;
+  final VoidCallback? onSlideLeftUpStart;
+  final ValueChanged<double>? onSlideLeftUpUpdate;
+  final ValueChanged<double>? onSlideLeftUpEnd;
+  final VoidCallback? onSlideLeftDownStart;
+  final ValueChanged<double>? onSlideLeftDownUpdate;
+  final ValueChanged<double>? onSlideLeftDownEnd;
+  final VoidCallback? onSlideRightUpStart;
+  final ValueChanged<double>? onSlideRightUpUpdate;
+  final ValueChanged<double>? onSlideRightUpEnd;
+  final VoidCallback? onSlideRightDownStart;
+  final ValueChanged<double>? onSlideRightDownUpdate;
+  final ValueChanged<double>? onSlideRightDownEnd;
 
   final Widget child;
 
@@ -138,22 +150,40 @@ class GestureRecognizerState extends State<GestureRecognizer> {
       if (absDx > absDy) {
         if (dx < 0) {
           _sideType = SideType.left;
+          if (widget.onSlideLeftStart != null) {
+            widget.onSlideLeftStart!();
+          }
         } else {
           _sideType = SideType.right;
+          if (widget.onSlideRightStart != null) {
+            widget.onSlideRightStart!();
+          }
         }
       } else {
         // 垂直方向滑动
         if (dy < 0) {
           if (details.localPosition.dx < size.width / 2) {
             _sideType = SideType.leftUp;
+            if (widget.onSlideLeftUpStart != null) {
+              widget.onSlideLeftUpStart!();
+            }
           } else {
             _sideType = SideType.rightUp;
+            if (widget.onSlideRightUpStart != null) {
+              widget.onSlideRightUpStart!();
+            }
           }
         } else {
           if (details.localPosition.dx < size.width / 2) {
             _sideType = SideType.leftDown;
+            if (widget.onSlideLeftDownStart != null) {
+              widget.onSlideLeftDownStart!();
+            }
           } else {
             _sideType = SideType.rightDown;
+            if (widget.onSlideRightDownStart != null) {
+              widget.onSlideRightDownStart!();
+            }
           }
         }
       }
@@ -164,38 +194,38 @@ class GestureRecognizerState extends State<GestureRecognizer> {
         break;
       case SideType.left:
         _sideXRatio += dx / size.width;
-        if (widget.onSideLeftUpdate != null) {
-          widget.onSideLeftUpdate!(min(max(-_sideXRatio, 0), 1));
+        if (widget.onSlideLeftUpdate != null) {
+          widget.onSlideLeftUpdate!(min(max(-_sideXRatio, 0), 1));
         }
         break;
       case SideType.right:
         _sideXRatio += dx / size.width;
-        if (widget.onSideRightUpdate != null) {
-          widget.onSideRightUpdate!(min(max(_sideXRatio, 0), 1));
+        if (widget.onSlideRightUpdate != null) {
+          widget.onSlideRightUpdate!(min(max(_sideXRatio, 0), 1));
         }
         break;
       case SideType.leftUp:
         _sideYRatio += dy / size.height;
-        if (widget.onSideLeftUpUpdate != null) {
-          widget.onSideLeftUpUpdate!(min(max(-_sideYRatio, 0), 1));
+        if (widget.onSlideLeftUpUpdate != null) {
+          widget.onSlideLeftUpUpdate!(min(max(-_sideYRatio, 0), 1));
         }
         break;
       case SideType.leftDown:
         _sideYRatio += dy / size.height;
-        if (widget.onSideLeftDownUpdate != null) {
-          widget.onSideLeftDownUpdate!(min(max(_sideYRatio, 0), 1));
+        if (widget.onSlideLeftDownUpdate != null) {
+          widget.onSlideLeftDownUpdate!(min(max(_sideYRatio, 0), 1));
         }
         break;
       case SideType.rightUp:
         _sideYRatio += dy / size.height;
-        if (widget.onSideRightUpUpdate != null) {
-          widget.onSideRightUpUpdate!(min(max(-_sideYRatio, 0), 1));
+        if (widget.onSlideRightUpUpdate != null) {
+          widget.onSlideRightUpUpdate!(min(max(-_sideYRatio, 0), 1));
         }
         break;
       case SideType.rightDown:
         _sideYRatio += dy / size.height;
-        if (widget.onSideRightDownUpdate != null) {
-          widget.onSideRightDownUpdate!(min(max(_sideYRatio, 0), 1));
+        if (widget.onSlideRightDownUpdate != null) {
+          widget.onSlideRightDownUpdate!(min(max(_sideYRatio, 0), 1));
         }
         break;
     }
@@ -206,33 +236,33 @@ class GestureRecognizerState extends State<GestureRecognizer> {
       case SideType.none:
         break;
       case SideType.left:
-        if (widget.onSideLeftEnd != null) {
-          widget.onSideLeftEnd!(min(max(-_sideXRatio, 0), 1));
+        if (widget.onSlideLeftEnd != null) {
+          widget.onSlideLeftEnd!(min(max(-_sideXRatio, 0), 1));
         }
         break;
       case SideType.right:
-        if (widget.onSideRightEnd != null) {
-          widget.onSideRightEnd!(min(max(_sideXRatio, 0), 1));
+        if (widget.onSlideRightEnd != null) {
+          widget.onSlideRightEnd!(min(max(_sideXRatio, 0), 1));
         }
         break;
       case SideType.leftUp:
-        if (widget.onSideLeftUpEnd != null) {
-          widget.onSideLeftUpEnd!(min(max(-_sideYRatio, 0), 1));
+        if (widget.onSlideLeftUpEnd != null) {
+          widget.onSlideLeftUpEnd!(min(max(-_sideYRatio, 0), 1));
         }
         break;
       case SideType.leftDown:
-        if (widget.onSideLeftDownEnd != null) {
-          widget.onSideLeftDownEnd!(min(max(_sideYRatio, 0), 1));
+        if (widget.onSlideLeftDownEnd != null) {
+          widget.onSlideLeftDownEnd!(min(max(_sideYRatio, 0), 1));
         }
         break;
       case SideType.rightUp:
-        if (widget.onSideRightUpEnd != null) {
-          widget.onSideRightUpEnd!(min(max(-_sideYRatio, 0), 1));
+        if (widget.onSlideRightUpEnd != null) {
+          widget.onSlideRightUpEnd!(min(max(-_sideYRatio, 0), 1));
         }
         break;
       case SideType.rightDown:
-        if (widget.onSideRightDownEnd != null) {
-          widget.onSideRightDownEnd!(min(max(_sideYRatio, 0), 1));
+        if (widget.onSlideRightDownEnd != null) {
+          widget.onSlideRightDownEnd!(min(max(_sideYRatio, 0), 1));
         }
         break;
     }
@@ -244,7 +274,7 @@ class GestureRecognizerState extends State<GestureRecognizer> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      behavior: HitTestBehavior.translucent,
+      behavior: HitTestBehavior.opaque,
       onTap: _onTap,
       onLongPressStart: _onLongPressStart,
       onLongPressEnd: _onLongPressEnd,
