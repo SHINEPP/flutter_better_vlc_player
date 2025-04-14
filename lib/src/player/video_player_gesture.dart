@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
@@ -97,14 +96,9 @@ class VideoPlayerGesture extends StatefulWidget {
 }
 
 class VideoPlayerGestureState extends State<VideoPlayerGesture> {
-  static const _sideThreshold = 20;
-
-  var _startPosition = Offset.zero;
   var _sideType = SideType.none;
-
-  // 滑动最新值
-  double _sideHorizonRatio = 0;
-  double _sideVerticalRatio = 0;
+  double _sideXRatio = 0;
+  double _sideYRatio = 0;
 
   void _onTap() {
     if (widget.onTap != null) {
@@ -126,13 +120,13 @@ class VideoPlayerGestureState extends State<VideoPlayerGesture> {
 
   void _onPanStart(DragStartDetails details) {
     _sideType = SideType.none;
-    _startPosition = details.globalPosition;
+    _sideXRatio = 0;
+    _sideYRatio = 0;
   }
 
   void _onPanUpdate(DragUpdateDetails details) {
-    final currentPosition = details.globalPosition;
-    final dx = currentPosition.dx - _startPosition.dx;
-    final dy = currentPosition.dy - _startPosition.dy;
+    final dx = details.delta.dx;
+    final dy = details.delta.dy;
 
     final absDx = dx.abs();
     final absDy = dy.abs();
@@ -142,21 +136,21 @@ class VideoPlayerGestureState extends State<VideoPlayerGesture> {
     if (_sideType == SideType.none) {
       // 水平方向滑动
       if (absDx > absDy) {
-        if (dx > _sideThreshold) {
-          _sideType = SideType.right;
-        } else if (dx < -_sideThreshold) {
+        if (dx < 0) {
           _sideType = SideType.left;
+        } else {
+          _sideType = SideType.right;
         }
       } else {
         // 垂直方向滑动
-        if (dy < -_sideThreshold) {
-          if (_startPosition.dx < size.width / 2) {
+        if (dy < 0) {
+          if (details.localPosition.dx < size.width / 2) {
             _sideType = SideType.leftUp;
           } else {
             _sideType = SideType.rightUp;
           }
-        } else if (dy > _sideThreshold) {
-          if (_startPosition.dx < size.width / 2) {
+        } else {
+          if (details.localPosition.dx < size.width / 2) {
             _sideType = SideType.leftDown;
           } else {
             _sideType = SideType.rightDown;
@@ -165,45 +159,43 @@ class VideoPlayerGestureState extends State<VideoPlayerGesture> {
       }
     }
 
-    final ratioX = min(absDx / size.width, 1.0);
-    final ratioY = min(absDy / size.height, 1.0);
     switch (_sideType) {
       case SideType.none:
         break;
       case SideType.left:
-        _sideHorizonRatio = ratioX;
+        _sideXRatio += dx / size.width;
         if (widget.onSideLeftUpdate != null) {
-          widget.onSideLeftUpdate!(ratioX);
+          widget.onSideLeftUpdate!(min(max(-_sideXRatio, 0), 1));
         }
         break;
       case SideType.right:
-        _sideHorizonRatio = ratioX;
+        _sideXRatio += dx / size.width;
         if (widget.onSideRightUpdate != null) {
-          widget.onSideRightUpdate!(ratioX);
+          widget.onSideRightUpdate!(min(max(_sideXRatio, 0), 1));
         }
         break;
       case SideType.leftUp:
-        _sideVerticalRatio = ratioY;
+        _sideYRatio += dy / size.height;
         if (widget.onSideLeftUpUpdate != null) {
-          widget.onSideLeftUpUpdate!(ratioY);
+          widget.onSideLeftUpUpdate!(min(max(-_sideYRatio, 0), 1));
         }
         break;
       case SideType.leftDown:
-        _sideVerticalRatio = ratioY;
+        _sideYRatio += dy / size.height;
         if (widget.onSideLeftDownUpdate != null) {
-          widget.onSideLeftDownUpdate!(ratioY);
+          widget.onSideLeftDownUpdate!(min(max(_sideYRatio, 0), 1));
         }
         break;
       case SideType.rightUp:
-        _sideVerticalRatio = ratioY;
+        _sideYRatio += dy / size.height;
         if (widget.onSideRightUpUpdate != null) {
-          widget.onSideRightUpUpdate!(ratioY);
+          widget.onSideRightUpUpdate!(min(max(-_sideYRatio, 0), 1));
         }
         break;
       case SideType.rightDown:
-        _sideVerticalRatio = ratioY;
+        _sideYRatio += dy / size.height;
         if (widget.onSideRightDownUpdate != null) {
-          widget.onSideRightDownUpdate!(ratioY);
+          widget.onSideRightDownUpdate!(min(max(_sideYRatio, 0), 1));
         }
         break;
     }
@@ -215,41 +207,44 @@ class VideoPlayerGestureState extends State<VideoPlayerGesture> {
         break;
       case SideType.left:
         if (widget.onSideLeftEnd != null) {
-          widget.onSideLeftEnd!(_sideHorizonRatio);
+          widget.onSideLeftEnd!(min(max(-_sideXRatio, 0), 1));
         }
         break;
       case SideType.right:
         if (widget.onSideRightEnd != null) {
-          widget.onSideRightEnd!(_sideHorizonRatio);
+          widget.onSideRightEnd!(min(max(_sideXRatio, 0), 1));
         }
         break;
       case SideType.leftUp:
         if (widget.onSideLeftUpEnd != null) {
-          widget.onSideLeftUpEnd!(_sideVerticalRatio);
+          widget.onSideLeftUpEnd!(min(max(-_sideYRatio, 0), 1));
         }
         break;
       case SideType.leftDown:
         if (widget.onSideLeftDownEnd != null) {
-          widget.onSideLeftDownEnd!(_sideVerticalRatio);
+          widget.onSideLeftDownEnd!(min(max(_sideYRatio, 0), 1));
         }
         break;
       case SideType.rightUp:
         if (widget.onSideRightUpEnd != null) {
-          widget.onSideRightUpEnd!(_sideVerticalRatio);
+          widget.onSideRightUpEnd!(min(max(-_sideYRatio, 0), 1));
         }
         break;
       case SideType.rightDown:
         if (widget.onSideRightDownEnd != null) {
-          widget.onSideRightDownEnd!(_sideVerticalRatio);
+          widget.onSideRightDownEnd!(min(max(_sideYRatio, 0), 1));
         }
         break;
     }
+    _sideXRatio = 0;
+    _sideYRatio = 0;
     _sideType = SideType.none;
   }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      behavior: HitTestBehavior.translucent,
       onTap: _onTap,
       onLongPressStart: _onLongPressStart,
       onLongPressEnd: _onLongPressEnd,

@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_better_vlc_player/flutter_better_vlc_player.dart';
 import 'package:flutter_better_vlc_player/src/player/video_player_controls.dart';
 import 'package:flutter_better_vlc_player/src/player/video_player_full_screen.dart';
+import 'package:flutter_better_vlc_player/src/player/video_player_gesture.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 class VideoPlayer extends StatefulWidget {
@@ -79,12 +80,14 @@ class _VideoPlayerState extends State<VideoPlayer> with WidgetsBindingObserver {
           VideoPlayerMenu(controller: _controller, isFullScreen: false),
           Hero(
             tag: _controller,
-            child: VlcPlayer(
-              controller: _controller,
-              aspectRatio: _aspectRatio,
-              placeholder: CupertinoActivityIndicator(
-                radius: 14,
-                color: Colors.white,
+            child: VideoPlayerGesture(
+              child: VlcPlayer(
+                controller: _controller,
+                aspectRatio: _aspectRatio,
+                placeholder: CupertinoActivityIndicator(
+                  radius: 14,
+                  color: Colors.white,
+                ),
               ),
             ),
           ),
