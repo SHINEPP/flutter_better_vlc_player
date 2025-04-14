@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_better_vlc_player/flutter_better_vlc_player.dart';
+import 'package:flutter_better_vlc_player/src/player/brightness_utils.dart';
 import 'package:flutter_better_vlc_player/src/player/gesture_recognizer.dart';
 import 'package:flutter_better_vlc_player/src/player/menu_sheet.dart';
 import 'package:flutter_better_vlc_player/src/player/side_sheet.dart';
@@ -194,6 +195,9 @@ class _GestureVideoPlayerState extends State<GestureVideoPlayer> {
   var _showPosition = 0;
   var _totalDuration = 0;
 
+  var _startBrightness = 0.0;
+  var _startVolume = 0;
+
   @override
   void initState() {
     super.initState();
@@ -213,57 +217,61 @@ class _GestureVideoPlayerState extends State<GestureVideoPlayer> {
   }
 
   /// left
-  void _onSlideLeftStart() async {
-    final position = await _controller.getPosition();
-    _startPosition = position.inMilliseconds;
-  }
-
-  void _onSlideLeftUpdate(double ratio) async {
-    _showPosition = _startPosition - (30000 * ratio).toInt();
-    final position = Duration(milliseconds: max(_showPosition, 0));
-    final positionText = position.toString().split('.').first.padLeft(8, '0');
-    _tip.value = "快退 $positionText";
-  }
-
-  void _onSlideLeftEnd(double ratio) async {
-    final position = Duration(milliseconds: min(_showPosition, _totalDuration));
-    await _controller.seekTo(position);
-    _tip.value = "";
-  }
-
-  /// right
-  void _onSlideRightStart() async {
+  void _onSlideHorizonStart() async {
     final position = await _controller.getPosition();
     final duration = await _controller.getDuration();
     _startPosition = position.inMilliseconds;
     _totalDuration = duration.inMilliseconds;
   }
 
-  void _onSlideRightUpdate(double ratio) async {
+  void _onSlideHorizonUpdate(double ratio) async {
     _showPosition = _startPosition + (30000 * ratio).toInt();
-    final position = Duration(milliseconds: min(_showPosition, _totalDuration));
+    final position = Duration(
+      milliseconds: min(max(_showPosition, 0), _totalDuration),
+    );
     final positionText = position.toString().split('.').first.padLeft(8, '0');
-    _tip.value = "快进 $positionText";
+    _tip.value = "${ratio < 0 ? "快退" : "快进"} $positionText";
   }
 
-  void _onSlideRightEnd(double ratio) async {
-    final position = Duration(milliseconds: min(_showPosition, _totalDuration));
+  void _onSlideHorizonEnd(double ratio) async {
+    final position = Duration(
+      milliseconds: min(max(_showPosition, 0), _totalDuration),
+    );
     await _controller.seekTo(position);
     _tip.value = "";
   }
 
   /// left up or down
-  void _onSlideLeftUpStart() async {}
+  void _onSlideLeftVerticalStart() async {
+    _startBrightness = await BrightNessUtils.systemBrightness;
+  }
 
-  void _onSlideLeftUpUpdate(double ratio) async {}
+  void _onSlideLeftVerticalUpdate(double ratio) async {
+    final brightness = min(max(_startBrightness + ratio, 0.0), 1.0);
+    _tip.value = "${(brightness * 100).toStringAsFixed(0)}%";
+  }
 
-  void _onSlideLeftUpEnd(double ration) async {}
+  void _onSlideLeftVerticalEnd(double ratio) async {
+    final brightness = min(max(_startBrightness + ratio, 0.0), 1.0);
+    await BrightNessUtils.setSystemBrightness(brightness);
+    _tip.value = "";
+  }
 
-  void _onSlideLeftDownStart() async {}
+  /// right up or down
+  void _onSlideRightVerticalStart() async {
+    _startVolume = await _controller.getVolume() ?? 0;
+  }
 
-  void _onSlideLeftDownUpdate(double ratio) async {}
+  void _onSlideRightVerticalUpdate(double ratio) async {
+    final volume = min(max(_startVolume + ratio * 100, 0), 100);
+    _tip.value = "${volume.toInt()}";
+  }
 
-  void _onSlideLeftDownEnd(double ratio) async {}
+  void _onSlideRightVerticalEnd(double ratio) async {
+    final volume = min(max(_startVolume + ratio * 100, 0), 100);
+    await _controller.setVolume(volume.toInt());
+    _tip.value = "";
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -276,18 +284,15 @@ class _GestureVideoPlayerState extends State<GestureVideoPlayer> {
             onTap: widget.onTap,
             onLongPressStart: _onLongPressStart,
             onLongPressEnd: _onLongPressEnd,
-            onSlideLeftStart: _onSlideLeftStart,
-            onSlideLeftUpdate: _onSlideLeftUpdate,
-            onSlideLeftEnd: _onSlideLeftEnd,
-            onSlideRightStart: _onSlideRightStart,
-            onSlideRightUpdate: _onSlideRightUpdate,
-            onSlideRightEnd: _onSlideRightEnd,
-            onSlideLeftUpStart: _onSlideLeftUpStart,
-            onSlideLeftUpUpdate: _onSlideLeftUpUpdate,
-            onSlideLeftUpEnd: _onSlideLeftUpEnd,
-            onSlideLeftDownStart: _onSlideLeftDownStart,
-            onSlideLeftDownUpdate: _onSlideLeftDownUpdate,
-            onSlideLeftDownEnd: _onSlideLeftDownEnd,
+            onSlideHorizonStart: _onSlideHorizonStart,
+            onSlideHorizonUpdate: _onSlideHorizonUpdate,
+            onSlideHorizonEnd: _onSlideHorizonEnd,
+            onSlideLeftVerticalStart: _onSlideLeftVerticalStart,
+            onSlideLeftVerticalUpdate: _onSlideLeftVerticalUpdate,
+            onSlideLeftVerticalEnd: _onSlideLeftVerticalEnd,
+            onSlideRightVerticalStart: _onSlideRightVerticalStart,
+            onSlideRightVerticalUpdate: _onSlideRightVerticalUpdate,
+            onSlideRightVerticalEnd: _onSlideRightVerticalEnd,
             child: VlcPlayer(
               controller: widget.controller,
               aspectRatio: widget.aspectRatio,
@@ -305,7 +310,7 @@ class _GestureVideoPlayerState extends State<GestureVideoPlayer> {
                 child: Center(
                   child: Container(
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(4),
                       color: Colors.black12,
                     ),
                     padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),

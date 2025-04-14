@@ -2,55 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-void main() => runApp(GestureDemo());
-
-class GestureDemo extends StatefulWidget {
-  const GestureDemo({super.key});
-
-  @override
-  State<GestureDemo> createState() => _GestureDemoState();
-}
-
-class _GestureDemoState extends State<GestureDemo> {
-  final _value = ValueNotifier<String>("请滑动");
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        body: GestureRecognizer(
-          onTap: () => _value.value = "点击",
-          onLongPressStart: () => _value.value = "长按开始",
-          onLongPressEnd: () => _value.value = "长按结束",
-          onSlideLeftUpdate: (v) => _value.value = "左滑:$v",
-          onSlideLeftEnd: (v) => _value.value = "左滑到:$v",
-          onSlideRightUpdate: (v) => _value.value = "右滑:$v",
-          onSlideRightEnd: (v) => _value.value = "右滑到:$v",
-          onSlideLeftUpUpdate: (v) => _value.value = "左侧上滑:$v",
-          onSlideLeftUpEnd: (v) => _value.value = "左侧上滑到:$v",
-          onSlideLeftDownUpdate: (v) => _value.value = "左侧下滑:$v",
-          onSlideLeftDownEnd: (v) => _value.value = "左侧下滑到:$v",
-          onSlideRightUpUpdate: (v) => _value.value = "右侧上滑:$v",
-          onSlideRightUpEnd: (v) => _value.value = "右侧上滑到:$v",
-          onSlideRightDownUpdate: (v) => _value.value = "右侧下滑:$v",
-          onSlideRightDownEnd: (v) => _value.value = "右侧下滑到:$v",
-          child: Container(
-            color: Colors.grey,
-            alignment: Alignment.center,
-            child: ValueListenableBuilder(
-              valueListenable: _value,
-              builder: (context, value, child) {
-                return Text(value, style: TextStyle(fontSize: 28));
-              },
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-enum SideType { none, left, right, leftUp, leftDown, rightUp, rightDown }
+enum SideType { none, horizon, leftVertical, rightVertical }
 
 class GestureRecognizer extends StatefulWidget {
   const GestureRecognizer({
@@ -58,48 +10,33 @@ class GestureRecognizer extends StatefulWidget {
     this.onTap,
     this.onLongPressStart,
     this.onLongPressEnd,
-    this.onSlideLeftStart,
-    this.onSlideLeftUpdate,
-    this.onSlideLeftEnd,
-    this.onSlideRightStart,
-    this.onSlideRightUpdate,
-    this.onSlideRightEnd,
-    this.onSlideLeftUpStart,
-    this.onSlideLeftUpUpdate,
-    this.onSlideLeftUpEnd,
-    this.onSlideLeftDownStart,
-    this.onSlideLeftDownUpdate,
-    this.onSlideLeftDownEnd,
-    this.onSlideRightUpStart,
-    this.onSlideRightUpUpdate,
-    this.onSlideRightUpEnd,
-    this.onSlideRightDownStart,
-    this.onSlideRightDownUpdate,
-    this.onSlideRightDownEnd,
+    this.onSlideHorizonStart,
+    this.onSlideHorizonUpdate,
+    this.onSlideHorizonEnd,
+    this.onSlideLeftVerticalStart,
+    this.onSlideLeftVerticalUpdate,
+    this.onSlideLeftVerticalEnd,
+    this.onSlideRightVerticalStart,
+    this.onSlideRightVerticalUpdate,
+    this.onSlideRightVerticalEnd,
     required this.child,
   });
 
   final VoidCallback? onTap;
   final VoidCallback? onLongPressStart;
   final VoidCallback? onLongPressEnd;
-  final VoidCallback? onSlideLeftStart;
-  final ValueChanged<double>? onSlideLeftUpdate;
-  final ValueChanged<double>? onSlideLeftEnd;
-  final VoidCallback? onSlideRightStart;
-  final ValueChanged<double>? onSlideRightUpdate;
-  final ValueChanged<double>? onSlideRightEnd;
-  final VoidCallback? onSlideLeftUpStart;
-  final ValueChanged<double>? onSlideLeftUpUpdate;
-  final ValueChanged<double>? onSlideLeftUpEnd;
-  final VoidCallback? onSlideLeftDownStart;
-  final ValueChanged<double>? onSlideLeftDownUpdate;
-  final ValueChanged<double>? onSlideLeftDownEnd;
-  final VoidCallback? onSlideRightUpStart;
-  final ValueChanged<double>? onSlideRightUpUpdate;
-  final ValueChanged<double>? onSlideRightUpEnd;
-  final VoidCallback? onSlideRightDownStart;
-  final ValueChanged<double>? onSlideRightDownUpdate;
-  final ValueChanged<double>? onSlideRightDownEnd;
+
+  final VoidCallback? onSlideHorizonStart;
+  final ValueChanged<double>? onSlideHorizonUpdate;
+  final ValueChanged<double>? onSlideHorizonEnd;
+
+  final VoidCallback? onSlideLeftVerticalStart;
+  final ValueChanged<double>? onSlideLeftVerticalUpdate;
+  final ValueChanged<double>? onSlideLeftVerticalEnd;
+
+  final VoidCallback? onSlideRightVerticalStart;
+  final ValueChanged<double>? onSlideRightVerticalUpdate;
+  final ValueChanged<double>? onSlideRightVerticalEnd;
 
   final Widget child;
 
@@ -109,6 +46,8 @@ class GestureRecognizer extends StatefulWidget {
 
 class GestureRecognizerState extends State<GestureRecognizer> {
   var _sideType = SideType.none;
+  double _width = 0;
+  double _height = 0;
   double _sideXRatio = 0;
   double _sideYRatio = 0;
 
@@ -131,6 +70,9 @@ class GestureRecognizerState extends State<GestureRecognizer> {
   }
 
   void _onPanStart(DragStartDetails details) {
+    final size = MediaQuery.of(context).size;
+    _width = size.width;
+    _height = size.height;
     _sideType = SideType.none;
     _sideXRatio = 0;
     _sideYRatio = 0;
@@ -140,50 +82,25 @@ class GestureRecognizerState extends State<GestureRecognizer> {
     final dx = details.delta.dx;
     final dy = details.delta.dy;
 
-    final absDx = dx.abs();
-    final absDy = dy.abs();
-    final size = MediaQuery.of(context).size;
-
     // 确定方向
     if (_sideType == SideType.none) {
       // 水平方向滑动
-      if (absDx > absDy) {
-        if (dx < 0) {
-          _sideType = SideType.left;
-          if (widget.onSlideLeftStart != null) {
-            widget.onSlideLeftStart!();
-          }
-        } else {
-          _sideType = SideType.right;
-          if (widget.onSlideRightStart != null) {
-            widget.onSlideRightStart!();
-          }
+      if (dx.abs() > dy.abs()) {
+        _sideType = SideType.horizon;
+        if (widget.onSlideHorizonStart != null) {
+          widget.onSlideHorizonStart!();
         }
       } else {
         // 垂直方向滑动
-        if (dy < 0) {
-          if (details.localPosition.dx < size.width / 2) {
-            _sideType = SideType.leftUp;
-            if (widget.onSlideLeftUpStart != null) {
-              widget.onSlideLeftUpStart!();
-            }
-          } else {
-            _sideType = SideType.rightUp;
-            if (widget.onSlideRightUpStart != null) {
-              widget.onSlideRightUpStart!();
-            }
+        if (details.localPosition.dx < _width / 2) {
+          _sideType = SideType.leftVertical;
+          if (widget.onSlideLeftVerticalStart != null) {
+            widget.onSlideLeftVerticalStart!();
           }
         } else {
-          if (details.localPosition.dx < size.width / 2) {
-            _sideType = SideType.leftDown;
-            if (widget.onSlideLeftDownStart != null) {
-              widget.onSlideLeftDownStart!();
-            }
-          } else {
-            _sideType = SideType.rightDown;
-            if (widget.onSlideRightDownStart != null) {
-              widget.onSlideRightDownStart!();
-            }
+          _sideType = SideType.rightVertical;
+          if (widget.onSlideRightVerticalStart != null) {
+            widget.onSlideRightVerticalStart!();
           }
         }
       }
@@ -192,40 +109,22 @@ class GestureRecognizerState extends State<GestureRecognizer> {
     switch (_sideType) {
       case SideType.none:
         break;
-      case SideType.left:
-        _sideXRatio += dx / size.width;
-        if (widget.onSlideLeftUpdate != null) {
-          widget.onSlideLeftUpdate!(min(max(-_sideXRatio, 0), 1));
+      case SideType.horizon:
+        _sideXRatio += dx / _width;
+        if (widget.onSlideHorizonUpdate != null) {
+          widget.onSlideHorizonUpdate!(min(max(_sideXRatio, -1), 1));
         }
         break;
-      case SideType.right:
-        _sideXRatio += dx / size.width;
-        if (widget.onSlideRightUpdate != null) {
-          widget.onSlideRightUpdate!(min(max(_sideXRatio, 0), 1));
+      case SideType.leftVertical:
+        _sideYRatio += -dy / _height;
+        if (widget.onSlideLeftVerticalUpdate != null) {
+          widget.onSlideLeftVerticalUpdate!(min(max(_sideYRatio, -1), 1));
         }
         break;
-      case SideType.leftUp:
-        _sideYRatio += dy / size.height;
-        if (widget.onSlideLeftUpUpdate != null) {
-          widget.onSlideLeftUpUpdate!(min(max(-_sideYRatio, 0), 1));
-        }
-        break;
-      case SideType.leftDown:
-        _sideYRatio += dy / size.height;
-        if (widget.onSlideLeftDownUpdate != null) {
-          widget.onSlideLeftDownUpdate!(min(max(_sideYRatio, 0), 1));
-        }
-        break;
-      case SideType.rightUp:
-        _sideYRatio += dy / size.height;
-        if (widget.onSlideRightUpUpdate != null) {
-          widget.onSlideRightUpUpdate!(min(max(-_sideYRatio, 0), 1));
-        }
-        break;
-      case SideType.rightDown:
-        _sideYRatio += dy / size.height;
-        if (widget.onSlideRightDownUpdate != null) {
-          widget.onSlideRightDownUpdate!(min(max(_sideYRatio, 0), 1));
+      case SideType.rightVertical:
+        _sideYRatio += -dy / _height;
+        if (widget.onSlideRightVerticalUpdate != null) {
+          widget.onSlideRightVerticalUpdate!(min(max(_sideYRatio, -1), 1));
         }
         break;
     }
@@ -235,40 +134,22 @@ class GestureRecognizerState extends State<GestureRecognizer> {
     switch (_sideType) {
       case SideType.none:
         break;
-      case SideType.left:
-        if (widget.onSlideLeftEnd != null) {
-          widget.onSlideLeftEnd!(min(max(-_sideXRatio, 0), 1));
+      case SideType.horizon:
+        if (widget.onSlideHorizonEnd != null) {
+          widget.onSlideHorizonEnd!(min(max(_sideXRatio, -1), 1));
         }
         break;
-      case SideType.right:
-        if (widget.onSlideRightEnd != null) {
-          widget.onSlideRightEnd!(min(max(_sideXRatio, 0), 1));
+      case SideType.leftVertical:
+        if (widget.onSlideLeftVerticalEnd != null) {
+          widget.onSlideLeftVerticalEnd!(min(max(_sideYRatio, -1), 1));
         }
         break;
-      case SideType.leftUp:
-        if (widget.onSlideLeftUpEnd != null) {
-          widget.onSlideLeftUpEnd!(min(max(-_sideYRatio, 0), 1));
-        }
-        break;
-      case SideType.leftDown:
-        if (widget.onSlideLeftDownEnd != null) {
-          widget.onSlideLeftDownEnd!(min(max(_sideYRatio, 0), 1));
-        }
-        break;
-      case SideType.rightUp:
-        if (widget.onSlideRightUpEnd != null) {
-          widget.onSlideRightUpEnd!(min(max(-_sideYRatio, 0), 1));
-        }
-        break;
-      case SideType.rightDown:
-        if (widget.onSlideRightDownEnd != null) {
-          widget.onSlideRightDownEnd!(min(max(_sideYRatio, 0), 1));
+      case SideType.rightVertical:
+        if (widget.onSlideRightVerticalEnd != null) {
+          widget.onSlideRightVerticalEnd!(min(max(_sideYRatio, -1), 1));
         }
         break;
     }
-    _sideXRatio = 0;
-    _sideYRatio = 0;
-    _sideType = SideType.none;
   }
 
   @override

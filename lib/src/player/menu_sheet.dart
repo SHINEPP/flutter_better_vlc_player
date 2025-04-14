@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_better_vlc_player/flutter_better_vlc_player.dart';
 import 'package:flutter_better_vlc_player/src/player/audios_sheet.dart';
+import 'package:flutter_better_vlc_player/src/player/speed_sheet.dart';
 import 'package:flutter_better_vlc_player/src/player/subtitles_sheet.dart';
 
 class MenuSheet extends StatelessWidget {
@@ -27,6 +28,18 @@ class MenuSheet extends StatelessWidget {
             (context) => Scaffold(
               backgroundColor: Colors.white,
               body: AudiosSheet(controller: controller),
+            ),
+      ),
+    );
+  }
+
+  _onTapSpeed(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder:
+            (context) => Scaffold(
+              backgroundColor: Colors.white,
+              body: SpeedSheet(controller: controller),
             ),
       ),
     );
@@ -78,6 +91,17 @@ class MenuSheet extends StatelessWidget {
                     ),
                   ),
                   onTap: () => _onTapAudios(context),
+                ),
+                ListTile(
+                  title: Text(
+                    "倍速",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  onTap: () => _onTapSpeed(context),
                 ),
               ],
             ),
