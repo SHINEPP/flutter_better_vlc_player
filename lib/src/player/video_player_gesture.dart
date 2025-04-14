@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 void main() => runApp(GestureDemo());
@@ -111,35 +113,37 @@ class VideoPlayerGestureState extends State<VideoPlayerGesture> {
 
     if (absDx > absDy) {
       // 水平方向滑动
+      final ratio = min(absDx / size.width, 1.0);
       if (dx > _sideThreshold) {
         if (widget.onSideRight != null) {
-          widget.onSideRight!(0);
+          widget.onSideRight!(ratio);
         }
       } else if (dx < -_sideThreshold) {
         if (widget.onSideLeft != null) {
-          widget.onSideLeft!(0);
+          widget.onSideLeft!(ratio);
         }
       }
     } else {
       // 垂直方向滑动
+      final ratio = min(absDy / size.height, 1.0);
       if (dy < -_sideThreshold) {
         if (_startPosition.dx < size.width / 2) {
           if (widget.onSideLeftUp != null) {
-            widget.onSideLeftUp!(0);
+            widget.onSideLeftUp!(ratio);
           }
         } else {
           if (widget.onSideRightUp != null) {
-            widget.onSideRightUp!(0);
+            widget.onSideRightUp!(ratio);
           }
         }
       } else if (dy > _sideThreshold) {
         if (_startPosition.dx < size.width / 2) {
           if (widget.onSideLeftDown != null) {
-            widget.onSideLeftDown!(0);
+            widget.onSideLeftDown!(ratio);
           }
         } else {
           if (widget.onSideRightDown != null) {
-            widget.onSideRightDown!(0);
+            widget.onSideRightDown!(ratio);
           }
         }
       }
