@@ -18,7 +18,7 @@ class _GestureDemoState extends State<GestureDemo> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        body: VideoPlayerGesture(
+        body: GestureRecognizer(
           onTap: () => _value.value = "点击",
           onLongPressStart: () => _value.value = "长按开始",
           onLongPressEnd: () => _value.value = "长按结束",
@@ -52,8 +52,8 @@ class _GestureDemoState extends State<GestureDemo> {
 
 enum SideType { none, left, right, leftUp, leftDown, rightUp, rightDown }
 
-class VideoPlayerGesture extends StatefulWidget {
-  const VideoPlayerGesture({
+class GestureRecognizer extends StatefulWidget {
+  const GestureRecognizer({
     super.key,
     this.onTap,
     this.onLongPressStart,
@@ -92,10 +92,10 @@ class VideoPlayerGesture extends StatefulWidget {
   final Widget child;
 
   @override
-  VideoPlayerGestureState createState() => VideoPlayerGestureState();
+  GestureRecognizerState createState() => GestureRecognizerState();
 }
 
-class VideoPlayerGestureState extends State<VideoPlayerGesture> {
+class GestureRecognizerState extends State<GestureRecognizer> {
   var _sideType = SideType.none;
   double _sideXRatio = 0;
   double _sideYRatio = 0;

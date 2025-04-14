@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_better_vlc_player/flutter_better_vlc_player.dart';
 import 'package:flutter_better_vlc_player/src/player/menu_sheet.dart';
 import 'package:flutter_better_vlc_player/src/player/side_sheet.dart';
-import 'package:flutter_better_vlc_player/src/player/video_player_gesture.dart';
+import 'package:flutter_better_vlc_player/src/player/gesture_recognizer.dart';
 
 import 'video_track_shape.dart';
 
@@ -191,7 +191,7 @@ class _GestureVideoPlayerState extends State<GestureVideoPlayer> {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          VideoPlayerGesture(
+          GestureRecognizer(
             onTap: widget.onTap,
             child: VlcPlayer(
               controller: widget.controller,

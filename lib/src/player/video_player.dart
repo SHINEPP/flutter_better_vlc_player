@@ -1,10 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_better_vlc_player/flutter_better_vlc_player.dart';
 import 'package:flutter_better_vlc_player/src/player/video_player_controls.dart';
 import 'package:flutter_better_vlc_player/src/player/video_player_full_screen.dart';
-import 'package:flutter_better_vlc_player/src/player/video_player_gesture.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 class VideoPlayer extends StatefulWidget {
