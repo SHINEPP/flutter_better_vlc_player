@@ -306,7 +306,7 @@ class _GestureVideoPlayerState extends State<GestureVideoPlayer> {
             valueListenable: _tip,
             builder: (context, value, child) {
               return Visibility(
-                visible: true,
+                visible: value.isNotEmpty,
                 child: Center(
                   child: Container(
                     decoration: BoxDecoration(
