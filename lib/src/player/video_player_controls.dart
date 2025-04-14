@@ -3,9 +3,9 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_better_vlc_player/flutter_better_vlc_player.dart';
+import 'package:flutter_better_vlc_player/src/player/gesture_recognizer.dart';
 import 'package:flutter_better_vlc_player/src/player/menu_sheet.dart';
 import 'package:flutter_better_vlc_player/src/player/side_sheet.dart';
-import 'package:flutter_better_vlc_player/src/player/gesture_recognizer.dart';
 
 import 'video_track_shape.dart';
 
@@ -252,6 +252,19 @@ class _GestureVideoPlayerState extends State<GestureVideoPlayer> {
     _tip.value = "";
   }
 
+  /// left up or down
+  void _onSlideLeftUpStart() async {}
+
+  void _onSlideLeftUpUpdate(double ratio) async {}
+
+  void _onSlideLeftUpEnd(double ration) async {}
+
+  void _onSlideLeftDownStart() async {}
+
+  void _onSlideLeftDownUpdate(double ratio) async {}
+
+  void _onSlideLeftDownEnd(double ratio) async {}
+
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
@@ -269,6 +282,12 @@ class _GestureVideoPlayerState extends State<GestureVideoPlayer> {
             onSlideRightStart: _onSlideRightStart,
             onSlideRightUpdate: _onSlideRightUpdate,
             onSlideRightEnd: _onSlideRightEnd,
+            onSlideLeftUpStart: _onSlideLeftUpStart,
+            onSlideLeftUpUpdate: _onSlideLeftUpUpdate,
+            onSlideLeftUpEnd: _onSlideLeftUpEnd,
+            onSlideLeftDownStart: _onSlideLeftDownStart,
+            onSlideLeftDownUpdate: _onSlideLeftDownUpdate,
+            onSlideLeftDownEnd: _onSlideLeftDownEnd,
             child: VlcPlayer(
               controller: widget.controller,
               aspectRatio: widget.aspectRatio,
