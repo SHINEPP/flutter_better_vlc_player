@@ -61,16 +61,10 @@ class _VideoPlayerFullScreenState extends State<VideoPlayerFullScreen> {
         children: [
           Hero(
             tag: widget.controller,
-            child: VideoPlayerGesture(
+            child: GestureVideoPlayer(
+              aspectRatio: aspectRatio,
               onTap: _toggleControls,
-              child: VlcPlayer(
-                controller: widget.controller,
-                aspectRatio: aspectRatio,
-                placeholder: CupertinoActivityIndicator(
-                  radius: 14,
-                  color: Colors.white,
-                ),
-              ),
+              controller: widget.controller,
             ),
           ),
           Visibility(

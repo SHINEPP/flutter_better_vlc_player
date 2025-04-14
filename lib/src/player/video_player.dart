@@ -80,15 +80,9 @@ class _VideoPlayerState extends State<VideoPlayer> with WidgetsBindingObserver {
           VideoPlayerMenu(controller: _controller, isFullScreen: false),
           Hero(
             tag: _controller,
-            child: VideoPlayerGesture(
-              child: VlcPlayer(
-                controller: _controller,
-                aspectRatio: _aspectRatio,
-                placeholder: CupertinoActivityIndicator(
-                  radius: 14,
-                  color: Colors.white,
-                ),
-              ),
+            child: GestureVideoPlayer(
+              aspectRatio: _aspectRatio,
+              controller: _controller,
             ),
           ),
           VideoPlayerControls(

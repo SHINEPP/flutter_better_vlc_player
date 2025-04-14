@@ -1,7 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_better_vlc_player/flutter_better_vlc_player.dart';
 import 'package:flutter_better_vlc_player/src/player/menu_sheet.dart';
 import 'package:flutter_better_vlc_player/src/player/side_sheet.dart';
+import 'package:flutter_better_vlc_player/src/player/video_player_gesture.dart';
 
 import 'video_track_shape.dart';
 
@@ -157,6 +159,48 @@ class VideoPlayerMenu extends StatelessWidget {
             icon: Icon(Icons.more_vert, size: 24),
             color: Colors.white,
             onPressed: () => _onTapMenu(context),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// 触摸控制
+class GestureVideoPlayer extends StatefulWidget {
+  const GestureVideoPlayer({
+    super.key,
+    required this.controller,
+    required this.aspectRatio,
+    this.onTap,
+  });
+
+  final VlcPlayerController controller;
+  final double aspectRatio;
+  final VoidCallback? onTap;
+
+  @override
+  State<GestureVideoPlayer> createState() => _GestureVideoPlayerState();
+}
+
+class _GestureVideoPlayerState extends State<GestureVideoPlayer> {
+  @override
+  Widget build(BuildContext context) {
+    return AspectRatio(
+      aspectRatio: widget.aspectRatio,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          VideoPlayerGesture(
+            onTap: widget.onTap,
+            child: VlcPlayer(
+              controller: widget.controller,
+              aspectRatio: widget.aspectRatio,
+              placeholder: CupertinoActivityIndicator(
+                radius: 14,
+                color: Colors.white,
+              ),
+            ),
           ),
         ],
       ),
