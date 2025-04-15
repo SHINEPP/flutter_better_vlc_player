@@ -45,47 +45,45 @@ class _AudiosSheetState extends State<AudiosSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Column(
-        children: [
-          Container(
-            width: double.infinity,
-            height: 40,
-            alignment: Alignment.centerLeft,
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            margin: EdgeInsets.only(top: 8),
-            child: Text(
-              "音轨:",
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
+    return Column(
+      children: [
+        Container(
+          width: double.infinity,
+          height: 40,
+          alignment: Alignment.centerLeft,
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          margin: EdgeInsets.only(top: 8),
+          child: Text(
+            "音轨:",
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
             ),
           ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: _audios.length,
-              padding: EdgeInsets.only(bottom: 60),
-              itemBuilder: (context, index) {
-                final selected = index == _selectedIndex;
-                return ListTile(
-                  selected: selected,
-                  title: Text(
-                    _audios[index].title,
-                    style: TextStyle(
-                      color: selected ? Colors.blue : Colors.black,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
+        ),
+        Expanded(
+          child: ListView.builder(
+            itemCount: _audios.length,
+            padding: EdgeInsets.only(bottom: 60),
+            itemBuilder: (context, index) {
+              final selected = index == _selectedIndex;
+              return ListTile(
+                selected: selected,
+                title: Text(
+                  _audios[index].title,
+                  style: TextStyle(
+                    color: selected ? Colors.blue : Colors.black,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
                   ),
-                  onTap: () => _onTapAudio(_audios[index]),
-                );
-              },
-            ),
+                ),
+                onTap: () => _onTapAudio(_audios[index]),
+              );
+            },
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

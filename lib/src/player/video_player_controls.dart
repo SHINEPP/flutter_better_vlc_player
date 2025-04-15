@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_better_vlc_player/flutter_better_vlc_player.dart';
 import 'package:flutter_better_vlc_player/src/player/brightness_utils.dart';
 import 'package:flutter_better_vlc_player/src/player/gesture_recognizer.dart';
-import 'package:flutter_better_vlc_player/src/player/menu_sheet.dart';
-import 'package:flutter_better_vlc_player/src/player/side_sheet.dart';
+import 'package:flutter_better_vlc_player/src/player/sheet/menu_sheet.dart';
+import 'package:flutter_better_vlc_player/src/player/sheet/side_sheet.dart';
 
 import 'video_track_shape.dart';
 

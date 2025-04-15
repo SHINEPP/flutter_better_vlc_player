@@ -43,48 +43,46 @@ class _SubtitlesSheetState extends State<SubtitlesSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: double.infinity,
-            height: 40,
-            alignment: Alignment.centerLeft,
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            margin: EdgeInsets.only(top: 8),
-            child: Text(
-              "字幕:",
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: double.infinity,
+          height: 40,
+          alignment: Alignment.centerLeft,
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          margin: EdgeInsets.only(top: 8),
+          child: Text(
+            "字幕:",
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
             ),
           ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: _subtitles.length,
-              padding: EdgeInsets.only(bottom: 60),
-              itemBuilder: (context, index) {
-                final selected = index == _selectedIndex;
-                return ListTile(
-                  selected: selected,
-                  title: Text(
-                    _subtitles[index].title,
-                    style: TextStyle(
-                      color: selected ? Colors.blue : Colors.black,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
+        ),
+        Expanded(
+          child: ListView.builder(
+            itemCount: _subtitles.length,
+            padding: EdgeInsets.only(bottom: 60),
+            itemBuilder: (context, index) {
+              final selected = index == _selectedIndex;
+              return ListTile(
+                selected: selected,
+                title: Text(
+                  _subtitles[index].title,
+                  style: TextStyle(
+                    color: selected ? Colors.blue : Colors.black,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
                   ),
-                  onTap: () => _onTapSubtitle(_subtitles[index]),
-                );
-              },
-            ),
+                ),
+                onTap: () => _onTapSubtitle(_subtitles[index]),
+              );
+            },
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

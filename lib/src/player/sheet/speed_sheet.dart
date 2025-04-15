@@ -39,47 +39,45 @@ class _SpeedSheetState extends State<SpeedSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Column(
-        children: [
-          Container(
-            width: double.infinity,
-            height: 40,
-            alignment: Alignment.centerLeft,
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            margin: EdgeInsets.only(top: 8),
-            child: Text(
-              "倍速:",
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
+    return Column(
+      children: [
+        Container(
+          width: double.infinity,
+          height: 40,
+          alignment: Alignment.centerLeft,
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          margin: EdgeInsets.only(top: 8),
+          child: Text(
+            "倍速:",
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
             ),
           ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: _speed.length,
-              padding: EdgeInsets.only(bottom: 60),
-              itemBuilder: (context, index) {
-                final selected = index == _selectedIndex;
-                return ListTile(
-                  selected: selected,
-                  title: Text(
-                    "x${_speed[index]}",
-                    style: TextStyle(
-                      color: selected ? Colors.blue : Colors.black,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
+        ),
+        Expanded(
+          child: ListView.builder(
+            itemCount: _speed.length,
+            padding: EdgeInsets.only(bottom: 60),
+            itemBuilder: (context, index) {
+              final selected = index == _selectedIndex;
+              return ListTile(
+                selected: selected,
+                title: Text(
+                  "x${_speed[index]}",
+                  style: TextStyle(
+                    color: selected ? Colors.blue : Colors.black,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
                   ),
-                  onTap: () => _onTapAudio(_speed[index]),
-                );
-              },
-            ),
+                ),
+                onTap: () => _onTapAudio(_speed[index]),
+              );
+            },
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
