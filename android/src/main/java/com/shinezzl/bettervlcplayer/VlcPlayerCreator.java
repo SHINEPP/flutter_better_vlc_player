@@ -99,7 +99,11 @@ public class VlcPlayerCreator implements Messages.VlcPlayerApi {
     @Override
     public void dispose(Messages.ViewMessage arg) {
         // the player has been already disposed by platform we just remove it from players list
-        vlcPlayers.remove(arg.getViewId());
+        VlcPlayer player = vlcPlayers.get(arg.getViewId());
+        if (player != null) {
+            player.dispose();
+            vlcPlayers.remove(arg.getViewId());
+        }
     }
 
     @Override
