@@ -61,7 +61,7 @@ class MenuSheet extends StatelessWidget {
             style: TextStyle(
               color: Colors.black,
               fontSize: 16,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w700,
             ),
           ),
         ),
@@ -73,7 +73,7 @@ class MenuSheet extends StatelessWidget {
                 title: Text(
                   "字幕",
                   style: TextStyle(
-                    color: Colors.black,
+                    color: Colors.black87,
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                   ),
@@ -84,7 +84,7 @@ class MenuSheet extends StatelessWidget {
                 title: Text(
                   "音轨",
                   style: TextStyle(
-                    color: Colors.black,
+                    color: Colors.black87,
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                   ),
@@ -95,7 +95,7 @@ class MenuSheet extends StatelessWidget {
                 title: Text(
                   "倍速",
                   style: TextStyle(
-                    color: Colors.black,
+                    color: Colors.black87,
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                   ),

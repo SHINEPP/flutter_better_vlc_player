@@ -58,7 +58,7 @@ class _AudiosSheetState extends State<AudiosSheet> {
             style: TextStyle(
               color: Colors.black,
               fontSize: 16,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w700,
             ),
           ),
         ),
@@ -73,7 +73,7 @@ class _AudiosSheetState extends State<AudiosSheet> {
                 title: Text(
                   _audios[index].title,
                   style: TextStyle(
-                    color: selected ? Colors.blue : Colors.black,
+                    color: selected ? Colors.blue : Colors.black87,
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                   ),

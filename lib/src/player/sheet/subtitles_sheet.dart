@@ -57,7 +57,7 @@ class _SubtitlesSheetState extends State<SubtitlesSheet> {
             style: TextStyle(
               color: Colors.black,
               fontSize: 16,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w700,
             ),
           ),
         ),
@@ -72,7 +72,7 @@ class _SubtitlesSheetState extends State<SubtitlesSheet> {
                 title: Text(
                   _subtitles[index].title,
                   style: TextStyle(
-                    color: selected ? Colors.blue : Colors.black,
+                    color: selected ? Colors.blue : Colors.black87,
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                   ),
