@@ -10,6 +10,50 @@ import 'package:flutter_better_vlc_player/src/player/sheet/side_sheet.dart';
 
 import 'video_track_shape.dart';
 
+/// 顶部控制
+class VideoPlayerMenu extends StatelessWidget {
+  const VideoPlayerMenu({
+    super.key,
+    required this.controller,
+    required this.isFullScreen,
+  });
+
+  final VlcPlayerController controller;
+  final bool isFullScreen;
+
+  void _onTapMenu(BuildContext context) {
+    if (isFullScreen) {
+      showRightSideSheetWithNavigator(
+        context,
+        MenuSheet(controller: controller),
+      );
+    } else {
+      showBottomSideSheetWithNavigator(
+        context,
+        MenuSheet(controller: controller),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 40,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          IconButton(
+            iconSize: 40,
+            icon: Icon(Icons.more_vert, size: 24),
+            color: Colors.white,
+            onPressed: () => _onTapMenu(context),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 /// 底部控制
 class VideoPlayerControls extends StatefulWidget {
   const VideoPlayerControls({
@@ -38,14 +82,11 @@ class _VideoPlayerControlsState extends State<VideoPlayerControls> {
   void initState() {
     super.initState();
     _controller = widget.controller;
-    _controller.addListener(_onValueListener);
+    _controller.addListener(_updateVideoValue);
+    _updateVideoValue();
   }
 
-  void _onValueListener() {
-    if (!mounted || !_controller.value.isInitialized) {
-      return;
-    }
-
+  void _updateVideoValue() {
     final oPosition = _controller.value.position;
     final oDuration = _controller.value.duration;
     final posValue = oPosition.inMilliseconds;
@@ -72,7 +113,7 @@ class _VideoPlayerControlsState extends State<VideoPlayerControls> {
   @override
   void dispose() {
     super.dispose();
-    _controller.removeListener(_onValueListener);
+    _controller.removeListener(_updateVideoValue);
   }
 
   @override
@@ -125,50 +166,6 @@ class _VideoPlayerControlsState extends State<VideoPlayerControls> {
   }
 }
 
-/// 底部控制
-class VideoPlayerMenu extends StatelessWidget {
-  const VideoPlayerMenu({
-    super.key,
-    required this.controller,
-    required this.isFullScreen,
-  });
-
-  final VlcPlayerController controller;
-  final bool isFullScreen;
-
-  void _onTapMenu(BuildContext context) {
-    if (isFullScreen) {
-      showRightSideSheetWithNavigator(
-        context,
-        MenuSheet(controller: controller),
-      );
-    } else {
-      showBottomSideSheetWithNavigator(
-        context,
-        MenuSheet(controller: controller),
-      );
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 40,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          IconButton(
-            iconSize: 40,
-            icon: Icon(Icons.more_vert, size: 24),
-            color: Colors.white,
-            onPressed: () => _onTapMenu(context),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 /// 触摸控制
 class GestureVideoPlayer extends StatefulWidget {
   const GestureVideoPlayer({
@@ -208,7 +205,7 @@ class _GestureVideoPlayerState extends State<GestureVideoPlayer> {
   void _onLongPressStart() async {
     _lastPlaybackSpeed = await _controller.getPlaybackSpeed() ?? 1.0;
     await _controller.setPlaybackSpeed(3);
-    _tip.value = "快进 x3";
+    _tip.value = "快进 3x";
   }
 
   void _onLongPressEnd() async {
@@ -225,7 +222,7 @@ class _GestureVideoPlayerState extends State<GestureVideoPlayer> {
   }
 
   void _onSlideHorizonUpdate(double ratio) async {
-    _showPosition = _startPosition + (30000 * ratio).toInt();
+    _showPosition = _startPosition + (3 * 60 * 1000 * ratio).toInt();
     final position = Duration(
       milliseconds: min(max(_showPosition, 0), _totalDuration),
     );
@@ -307,7 +304,8 @@ class _GestureVideoPlayerState extends State<GestureVideoPlayer> {
             builder: (context, value, child) {
               return Visibility(
                 visible: value.isNotEmpty,
-                child: Center(
+                child: Container(
+                  alignment: Alignment(0, -0.333),
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(4),
