@@ -62,9 +62,10 @@ class _VideoPlayerFullScreenState extends State<VideoPlayerFullScreen> {
           Hero(
             tag: widget.controller,
             child: GestureVideoPlayer(
-              aspectRatio: aspectRatio,
-              onTap: _toggleControls,
               controller: widget.controller,
+              aspectRatio: aspectRatio,
+              isFullScreen: true,
+              onTap: _toggleControls,
             ),
           ),
           Visibility(

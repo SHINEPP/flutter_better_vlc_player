@@ -167,16 +167,42 @@ class _VideoPlayerControlsState extends State<VideoPlayerControls> {
 }
 
 /// 触摸控制
+enum GestureTipType { none, forward, rewind, volume, brightness }
+
+class GestureTip {
+  GestureTip({required this.type, required this.message});
+
+  final GestureTipType type;
+  final String message;
+
+  factory GestureTip.none() =>
+      GestureTip(type: GestureTipType.none, message: "");
+
+  factory GestureTip.forward(String message) =>
+      GestureTip(type: GestureTipType.forward, message: message);
+
+  factory GestureTip.retreat(String message) =>
+      GestureTip(type: GestureTipType.rewind, message: message);
+
+  factory GestureTip.volume(String message) =>
+      GestureTip(type: GestureTipType.volume, message: message);
+
+  factory GestureTip.brightness(String message) =>
+      GestureTip(type: GestureTipType.brightness, message: message);
+}
+
 class GestureVideoPlayer extends StatefulWidget {
   const GestureVideoPlayer({
     super.key,
     required this.controller,
     required this.aspectRatio,
+    required this.isFullScreen,
     this.onTap,
   });
 
   final VlcPlayerController controller;
   final double aspectRatio;
+  final bool isFullScreen;
   final VoidCallback? onTap;
 
   @override
@@ -185,7 +211,7 @@ class GestureVideoPlayer extends StatefulWidget {
 
 class _GestureVideoPlayerState extends State<GestureVideoPlayer> {
   late VlcPlayerController _controller;
-  final _tip = ValueNotifier<String>("");
+  final _tip = ValueNotifier<GestureTip>(GestureTip.none());
   var _lastPlaybackSpeed = 1.0;
 
   var _startPosition = 0;
@@ -205,12 +231,12 @@ class _GestureVideoPlayerState extends State<GestureVideoPlayer> {
   void _onLongPressStart() async {
     _lastPlaybackSpeed = await _controller.getPlaybackSpeed() ?? 1.0;
     await _controller.setPlaybackSpeed(3);
-    _tip.value = "快进 3x";
+    _tip.value = GestureTip.forward("快进 3x");
   }
 
   void _onLongPressEnd() async {
     await _controller.setPlaybackSpeed(_lastPlaybackSpeed);
-    _tip.value = "";
+    _tip.value = GestureTip.none();
   }
 
   /// left
@@ -222,12 +248,16 @@ class _GestureVideoPlayerState extends State<GestureVideoPlayer> {
   }
 
   void _onSlideHorizonUpdate(double ratio) async {
-    _showPosition = _startPosition + (3 * 60 * 1000 * ratio).toInt();
+    final minute = widget.isFullScreen ? 15 : 5;
+    _showPosition = _startPosition + (minute * 60 * 1000 * ratio).toInt();
     final position = Duration(
       milliseconds: min(max(_showPosition, 0), _totalDuration),
     );
     final positionText = position.toString().split('.').first.padLeft(8, '0');
-    _tip.value = "${ratio < 0 ? "快退" : "快进"} $positionText";
+    _tip.value =
+        ratio > 0
+            ? GestureTip.forward("快进 $positionText")
+            : GestureTip.retreat("快退 $positionText");
   }
 
   void _onSlideHorizonEnd(double ratio) async {
@@ -235,7 +265,7 @@ class _GestureVideoPlayerState extends State<GestureVideoPlayer> {
       milliseconds: min(max(_showPosition, 0), _totalDuration),
     );
     await _controller.seekTo(position);
-    _tip.value = "";
+    _tip.value = GestureTip.none();
   }
 
   /// left up or down
@@ -245,13 +275,16 @@ class _GestureVideoPlayerState extends State<GestureVideoPlayer> {
 
   void _onSlideLeftVerticalUpdate(double ratio) async {
     final brightness = min(max(_startBrightness + ratio, 0.0), 1.0);
-    _tip.value = "${(brightness * 100).toStringAsFixed(0)}%";
+    await BrightNessUtils.setSystemBrightness(brightness);
+    _tip.value = GestureTip.brightness(
+      "${(brightness * 100).toStringAsFixed(0)}%",
+    );
   }
 
   void _onSlideLeftVerticalEnd(double ratio) async {
     final brightness = min(max(_startBrightness + ratio, 0.0), 1.0);
     await BrightNessUtils.setSystemBrightness(brightness);
-    _tip.value = "";
+    _tip.value = GestureTip.none();
   }
 
   /// right up or down
@@ -261,13 +294,14 @@ class _GestureVideoPlayerState extends State<GestureVideoPlayer> {
 
   void _onSlideRightVerticalUpdate(double ratio) async {
     final volume = min(max(_startVolume + ratio * 100, 0), 100);
-    _tip.value = "${volume.toInt()}";
+    await _controller.setVolume(volume.toInt());
+    _tip.value = GestureTip.volume("${volume.toInt()}");
   }
 
   void _onSlideRightVerticalEnd(double ratio) async {
     final volume = min(max(_startVolume + ratio * 100, 0), 100);
     await _controller.setVolume(volume.toInt());
-    _tip.value = "";
+    _tip.value = GestureTip.none();
   }
 
   @override
@@ -303,7 +337,7 @@ class _GestureVideoPlayerState extends State<GestureVideoPlayer> {
             valueListenable: _tip,
             builder: (context, value, child) {
               return Visibility(
-                visible: value.isNotEmpty,
+                visible: value.type != GestureTipType.none,
                 child: Container(
                   alignment: Alignment(0, -0.333),
                   child: Container(
@@ -312,9 +346,16 @@ class _GestureVideoPlayerState extends State<GestureVideoPlayer> {
                       color: Colors.black12,
                     ),
                     padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                    child: Text(
-                      value,
-                      style: TextStyle(color: Colors.white, fontSize: 14),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _getGestureTipTypeIcon(value.type),
+                        SizedBox(width: 4),
+                        Text(
+                          value.message,
+                          style: TextStyle(color: Colors.white, fontSize: 14),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -324,5 +365,20 @@ class _GestureVideoPlayerState extends State<GestureVideoPlayer> {
         ],
       ),
     );
+  }
+
+  Widget _getGestureTipTypeIcon(GestureTipType type) {
+    switch (type) {
+      case GestureTipType.none:
+        return Container();
+      case GestureTipType.forward:
+        return Icon(Icons.fast_forward, size: 20, color: Colors.white);
+      case GestureTipType.rewind:
+        return Icon(Icons.fast_rewind, size: 20, color: Colors.white);
+      case GestureTipType.volume:
+        return Icon(Icons.volume_up, size: 20, color: Colors.white);
+      case GestureTipType.brightness:
+        return Icon(Icons.brightness_7, size: 16, color: Colors.white);
+    }
   }
 }

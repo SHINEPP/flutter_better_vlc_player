@@ -79,8 +79,9 @@ class _VideoPlayerState extends State<VideoPlayer> with WidgetsBindingObserver {
           Hero(
             tag: _controller,
             child: GestureVideoPlayer(
-              aspectRatio: _aspectRatio,
               controller: _controller,
+              aspectRatio: _aspectRatio,
+              isFullScreen: false,
             ),
           ),
           VideoPlayerControls(

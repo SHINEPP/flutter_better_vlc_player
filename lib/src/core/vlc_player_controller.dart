@@ -492,6 +492,7 @@ class VlcPlayerController extends ValueNotifier<VlcPlayerValue> {
     } else {
       newPosition = position;
     }
+    value = value.copyWith(position: newPosition);
     await VlcPlayerPlatform.instance.seekTo(_viewId, newPosition);
   }
 
