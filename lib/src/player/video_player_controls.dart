@@ -220,6 +220,7 @@ class _GestureVideoPlayerState extends State<GestureVideoPlayer> {
 
   var _startBrightness = 0.0;
   var _startVolume = 0;
+  var _settingTime = 0;
 
   @override
   void initState() {
@@ -270,12 +271,17 @@ class _GestureVideoPlayerState extends State<GestureVideoPlayer> {
 
   /// left up or down
   void _onSlideLeftVerticalStart() async {
+    _settingTime = DateTime.now().millisecondsSinceEpoch;
     _startBrightness = await BrightNessUtils.systemBrightness;
   }
 
   void _onSlideLeftVerticalUpdate(double ratio) async {
     final brightness = min(max(_startBrightness + ratio, 0.0), 1.0);
-    await BrightNessUtils.setSystemBrightness(brightness);
+    final time = DateTime.now().millisecondsSinceEpoch;
+    if (time - _settingTime > 300) {
+      _settingTime = time;
+      await BrightNessUtils.setSystemBrightness(brightness);
+    }
     _tip.value = GestureTip.brightness(
       "${(brightness * 100).toStringAsFixed(0)}%",
     );
@@ -289,12 +295,17 @@ class _GestureVideoPlayerState extends State<GestureVideoPlayer> {
 
   /// right up or down
   void _onSlideRightVerticalStart() async {
+    _settingTime = DateTime.now().millisecondsSinceEpoch;
     _startVolume = await _controller.getVolume() ?? 0;
   }
 
   void _onSlideRightVerticalUpdate(double ratio) async {
     final volume = min(max(_startVolume + ratio * 100, 0), 100);
-    await _controller.setVolume(volume.toInt());
+    final time = DateTime.now().millisecondsSinceEpoch;
+    if (time - _settingTime > 300) {
+      _settingTime = time;
+      await _controller.setVolume(volume.toInt());
+    }
     _tip.value = GestureTip.volume("${volume.toInt()}");
   }
 
