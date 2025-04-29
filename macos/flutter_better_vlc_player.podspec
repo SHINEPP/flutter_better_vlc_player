@@ -5,7 +5,7 @@
 Pod::Spec.new do |s|
   s.name             = 'flutter_better_vlc_player'
   s.version          = '0.0.1'
-  s.summary          = 'A new Flutter plugin project.'
+  s.summary          = 'A video player base vlc.'
   s.description      = <<-DESC
 A new Flutter plugin project.
                        DESC
@@ -16,15 +16,11 @@ A new Flutter plugin project.
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
 
-  # If your plugin requires a privacy manifest, for example if it collects user
-  # data, update the PrivacyInfo.xcprivacy file to describe your plugin's
-  # privacy impact, and then uncomment this line. For more information,
-  # see https://developer.apple.com/documentation/bundleresources/privacy_manifest_files
-  # s.resource_bundles = {'flutter_better_vlc_player_privacy' => ['Resources/PrivacyInfo.xcprivacy']}
-
   s.dependency 'FlutterMacOS'
-
   s.platform = :osx, '10.11'
+  s.dependency 'MobileVLCKit', '~> 3.6.1b1'
+  s.static_framework = true
+
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
   s.swift_version = '5.0'
 end
