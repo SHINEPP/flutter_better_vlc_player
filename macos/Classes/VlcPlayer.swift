@@ -29,9 +29,14 @@ public class VlcPlayer: NSObject {
         
         self._viewId = viewId;
         self.options = options;
-        self._view = VLCVideoView()
-        self._view.fillScreen = false
-        self.vlcMediaPlayer = VLCMediaPlayer()
+        
+        let rect = NSRect(x: 0, y: 0, width: 0, height: 0)
+        self._view = VLCVideoView(frame: rect)
+        self._view.autoresizingMask = [.height, .width]
+        self._view.fillScreen = true
+        VLCLibrary.shared()
+        
+        self.vlcMediaPlayer = VLCMediaPlayer(videoView: self._view)
         self.mediaEventChannel = mediaEventChannel
         self.mediaEventChannelHandler = VLCPlayerEventStreamHandler()
         self.rendererEventChannel = rendererEventChannel
@@ -121,7 +126,7 @@ public class VlcPlayer: NSObject {
     }
     
     public func getSpuTracksCount() -> NSNumber? {
-        return NSNumber(value: self.vlcMediaPlayer.numberOfSubtitlesTracks)
+        return NSNumber(value: self.vlcMediaPlayer.subtitles().count)
     }
     
     public func getSpuTracks() -> [Int:String]? {
@@ -129,11 +134,12 @@ public class VlcPlayer: NSObject {
     }
     
     public func setSpuTrack(spuTrackNumber: NSNumber?) {
-        self.vlcMediaPlayer.currentVideoSubTitleIndex = spuTrackNumber?.int32Value ?? 0
+        //self.vlcMediaPlayer.currentVideoSubTitleIndex = spuTrackNumber?.int32Value ?? 0
     }
     
     public func getSpuTrack() -> NSNumber? {
-        return NSNumber(value: self.vlcMediaPlayer.currentVideoSubTitleIndex)
+        //return NSNumber(value: self.vlcMediaPlayer.currentVideoSubTitleIndex)
+        return 0
     }
     
     public func setSpuDelay(delay: NSNumber?) {
@@ -159,7 +165,8 @@ public class VlcPlayer: NSObject {
     }
     
     public func getAudioTracksCount() -> NSNumber? {
-        return NSNumber(value: self.vlcMediaPlayer.numberOfAudioTracks)
+        //return NSNumber(value: self.vlcMediaPlayer.numberOfAudioTracks)
+        return 0
     }
     
     public func getAudioTracks() -> [Int:String]? {
@@ -167,11 +174,12 @@ public class VlcPlayer: NSObject {
     }
     
     public func setAudioTrack(audioTrackNumber: NSNumber?) {
-        self.vlcMediaPlayer.currentAudioTrackIndex = audioTrackNumber?.int32Value ?? 0
+        //self.vlcMediaPlayer.currentAudioTrackIndex = audioTrackNumber?.int32Value ?? 0
     }
     
     public func getAudioTrack() -> NSNumber? {
-        return NSNumber(value: self.vlcMediaPlayer.currentAudioTrackIndex)
+        //return NSNumber(value: self.vlcMediaPlayer.currentAudioTrackIndex)
+        return 0
     }
     
     public func setAudioDelay(delay: NSNumber?) {
@@ -197,7 +205,8 @@ public class VlcPlayer: NSObject {
     }
     
     public func getVideoTracksCount() -> NSNumber? {
-        return NSNumber(value: self.vlcMediaPlayer.numberOfVideoTracks)
+        //return NSNumber(value: self.vlcMediaPlayer.numberOfVideoTracks)
+        return 0
     }
     
     public func getVideoTracks() -> [Int:String]? {
@@ -205,11 +214,12 @@ public class VlcPlayer: NSObject {
     }
     
     public func setVideoTrack(videoTrackNumber: NSNumber?) {
-        self.vlcMediaPlayer.currentVideoTrackIndex = videoTrackNumber?.int32Value ?? 0
+        //self.vlcMediaPlayer.currentVideoTrackIndex = videoTrackNumber?.int32Value ?? 0
     }
     
     public func getVideoTrack() -> NSNumber? {
-        return NSNumber(value: self.vlcMediaPlayer.currentVideoTrackIndex)
+        //return NSNumber(value: self.vlcMediaPlayer.currentVideoTrackIndex)
+        return 0
     }
     
     public func setVideoScale(scale: NSNumber?) {
@@ -221,15 +231,12 @@ public class VlcPlayer: NSObject {
     }
     
     public func setVideoAspectRatio(aspectRatio: String?) {
-        let aspectRatio = UnsafeMutablePointer<Int8>(
-            mutating: (aspectRatio as NSString?)?.utf8String!
-        )
         self.vlcMediaPlayer.videoAspectRatio = aspectRatio
     }
     
     public func getVideoAspectRatio() -> String? {
         guard let aspectRatio = self.vlcMediaPlayer.videoAspectRatio else { return "1"};
-        return String(cString: aspectRatio)
+        return aspectRatio
     }
     
     public func getAvailableRendererServices() -> [String]? {
@@ -287,17 +294,19 @@ public class VlcPlayer: NSObject {
     }
     
     public func startRecording(saveDirectory: String) -> NSNumber{
-        return (!self.vlcMediaPlayer.startRecording(atPath: saveDirectory)) as NSNumber
+        //return (!self.vlcMediaPlayer.startRecording(atPath: saveDirectory)) as NSNumber
+        return 0
     }
     
     public func stopRecording() -> NSNumber{
-        return (!self.vlcMediaPlayer.stopRecording()) as NSNumber
+        //return (!self.vlcMediaPlayer.stopRecording()) as NSNumber
+        return 0
     }
     
     func setMediaPlayerUrl(uri: String, isAssetUrl: Bool, autoPlay: Bool, hwAcc: Int){
         self.vlcMediaPlayer.stop()
         
-        var media: VLCMedia
+        var media: VLCMedia?
         if(isAssetUrl){
             guard let path = Bundle.main.path(forResource: uri, ofType: nil)
             else {
@@ -312,27 +321,27 @@ public class VlcPlayer: NSObject {
             }
             media = VLCMedia(url: url)
         }
-        
+      
         if(!options.isEmpty){
             for option in options {
-                media.addOption(option)
+                media?.addOption(option)
             }
         }
         
         switch HWAccellerationType.init(rawValue: hwAcc)
         {
         case .HW_ACCELERATION_DISABLED:
-            media.addOption("--codec=avcodec")
+            media?.addOption("--codec=avcodec")
             break
 
         case .HW_ACCELERATION_DECODING:
-            media.addOption("--codec=all")
-            media.addOption(":no-mediacodec-dr")
-            media.addOption(":no-omxil-dr")
+            media?.addOption("--codec=all")
+            media?.addOption(":no-mediacodec-dr")
+            media?.addOption(":no-omxil-dr")
             break
 
         case .HW_ACCELERATION_FULL:
-            media.addOption("--codec=all")
+            media?.addOption("--codec=all")
             break
 
         case .HW_ACCELERATION_AUTOMATIC:
@@ -343,7 +352,7 @@ public class VlcPlayer: NSObject {
         }
         
         self.vlcMediaPlayer.media = media
-        media.parse(options: [.fetchLocal, .parseNetwork, .fetchNetwork])
+        media?.parse(options: [.fetchLocal, .parseNetwork, .fetchNetwork])
         self.vlcMediaPlayer.play()
         if(!autoPlay){
             self.vlcMediaPlayer.stop()
@@ -414,17 +423,20 @@ class VLCPlayerEventStreamHandler: NSObject, FlutterStreamHandler, VLCMediaPlaye
         return nil
     }
     
-    func mediaPlayerStateChanged(_ aNotification: Notification) {
+    private func mediaPlayerStateChanged(_ aNotification: Notification) {
         guard let mediaEventSink = self.mediaEventSink else { return }
         
         let player = aNotification.object as? VLCMediaPlayer
         let media = player?.media
         let height = player?.videoSize.height ?? 0
         let width = player?.videoSize.width ?? 0
-        let audioTracksCount = player?.numberOfAudioTracks ?? 0
-        let activeAudioTrack = player?.currentAudioTrackIndex ?? 0
-        let spuTracksCount = player?.numberOfSubtitlesTracks ?? 0
-        let activeSpuTrack = player?.currentVideoSubTitleIndex ?? 0
+        let audioTracks = player?.audioTracks ?? []
+        
+    
+        let audioTracksCount = audioTracks.count
+        let activeAudioTrack = 0//player?.currentAudioTrackIndex ?? 0
+        let spuTracksCount = 0//player?.numberOfSubtitlesTracks ?? 0
+        let activeSpuTrack = 0//player?.currentVideoSubTitleIndex ?? 0
         let duration =  media?.length.value ?? 0
         let speed = player?.rate ?? 1
         let position = player?.time.value?.intValue ?? 0
@@ -445,7 +457,7 @@ class VLCPlayerEventStreamHandler: NSObject, FlutterStreamHandler, VLCMediaPlaye
             ])
             break
             
-        case .stopped:
+        case .stopping:
             mediaEventSink([
                 "event": "stopped",
             ])
@@ -465,7 +477,7 @@ class VLCPlayerEventStreamHandler: NSObject, FlutterStreamHandler, VLCMediaPlaye
             ])
             break
             
-        case .ended:
+        case .stopped:
             mediaEventSink([
                 "event": "ended",
                 "position": position
@@ -501,9 +513,6 @@ class VLCPlayerEventStreamHandler: NSObject, FlutterStreamHandler, VLCMediaPlaye
             ])
             break
             
-        case .esAdded:
-            break
-            
         default:
             break
         }
@@ -519,7 +528,7 @@ class VLCPlayerEventStreamHandler: NSObject, FlutterStreamHandler, VLCMediaPlaye
         ])
     }
     
-    func mediaPlayer(_ player: VLCMediaPlayer, recordingStoppedAtPath path: String) {
+    private func mediaPlayer(_ player: VLCMediaPlayer, recordingStoppedAtPath path: String) {
         guard let mediaEventSink = self.mediaEventSink else { return }
         
         mediaEventSink([
@@ -538,10 +547,10 @@ class VLCPlayerEventStreamHandler: NSObject, FlutterStreamHandler, VLCMediaPlaye
         let width = player?.videoSize.width ?? 0
         let speed = player?.rate ?? 1
         let duration = player?.media?.length.value ?? 0
-        let audioTracksCount = player?.numberOfAudioTracks ?? 0
-        let activeAudioTrack = player?.currentAudioTrackIndex ?? 0
-        let spuTracksCount = player?.numberOfSubtitlesTracks ?? 0
-        let activeSpuTrack = player?.currentVideoSubTitleIndex ?? 0
+        let audioTracksCount = 0//player?.numberOfAudioTracks ?? 0
+        let activeAudioTrack = 0//player?.currentAudioTrackIndex ?? 0
+        let spuTracksCount = 0//player?.numberOfSubtitlesTracks ?? 0
+        let activeSpuTrack = 0//player?.currentVideoSubTitleIndex ?? 0
         let buffering = 100.0
         let isPlaying = player?.isPlaying ?? false
         //
@@ -583,69 +592,72 @@ enum HWAccellerationType: Int
 extension VLCMediaPlayer {
     
     func subtitles() -> [Int: String] {
-        guard let indexs = videoSubTitlesIndexes as? [Int],
-              let names = videoSubTitlesNames as? [String],
-              indexs.count == names.count
-        else {
-            return [:]
-        }
-        
-        var subtitles: [Int: String] = [:]
-        
-        var i = 0
-        for index in indexs {
-            if index >= 0 {
-                let name = names[i]
-                subtitles[Int(index)] = name
-            }
-            i = i + 1
-        }
-        
-        return subtitles
+        return [:]
+//        guard let indexs = videoSubTitlesIndexes as? [Int],
+//              let names = videoSubTitlesNames as? [String],
+//              indexs.count == names.count
+//        else {
+//            return [:]
+//        }
+//        
+//        var subtitles: [Int: String] = [:]
+//        
+//        var i = 0
+//        for index in indexs {
+//            if index >= 0 {
+//                let name = names[i]
+//                subtitles[Int(index)] = name
+//            }
+//            i = i + 1
+//        }
+//        
+//        return subtitles
     }
     
     func audioTracks() -> [Int: String] {
-        guard let indexs = audioTrackIndexes as? [Int],
-              let names = audioTrackNames as? [String],
-              indexs.count == names.count
-        else {
-            return [:]
-        }
-        
-        var audios: [Int: String] = [:]
-        
-        var i = 0
-        for index in indexs {
-            if index >= 0 {
-                let name = names[i]
-                audios[Int(index)] = name
-            }
-            i = i + 1
-        }
-        
-        return audios
+        return [:]
+//        guard let indexs = audioTrackIndexes as? [Int],
+//              let names = audioTrackNames as? [String],
+//              indexs.count == names.count
+//        else {
+//            return [:]
+//        }
+//        
+//        var audios: [Int: String] = [:]
+//        
+//        var i = 0
+//        for index in indexs {
+//            if index >= 0 {
+//                let name = names[i]
+//                audios[Int(index)] = name
+//            }
+//            i = i + 1
+//        }
+//        
+//        return audios
     }
     
-    func videoTracks() -> [Int: String]{
-        guard let indexs = videoTrackIndexes as? [Int],
-              let names = videoTrackNames as? [String],
-              indexs.count == names.count
-        else {
-            return [:]
-        }
-        
-        var videos: [Int: String] = [:]
-        
-        var i = 0
-        for index in indexs {
-            if index >= 0 {
-                let name = names[i]
-                videos[Int(index)] = name
-            }
-            i = i + 1
-        }
-        
-        return videos
+    func videoTracks() -> [Int: String] {
+        return [:]
+//        guard let indexs = videoTrackIndexes as? [Int],
+//              let names = videoTrackNames as? [String],
+//              indexs.count == names.count
+//        else {
+//            return [:]
+//        }
+//        
+//        var videos: [Int: String] = [:]
+//        
+//        var i = 0
+//        for index in indexs {
+//            if index >= 0 {
+//                let name = names[i]
+//                videos[Int(index)] = name
+//            }
+//            i = i + 1
+//        }
+//        
+//        return videos
     }
     
     func rendererServices() -> [String]{

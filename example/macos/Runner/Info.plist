@@ -29,21 +29,25 @@
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
 	<key>NSAppTransportSecurity</key>
-    <dict>
-        <key>NSAllowsArbitraryLoads</key>
-        <true/>
-    </dict>
-    <key>NSUserSelectedFile</key>
-    <string>Allow the user to select a file</string>
-    <key>NSDownloadsDirectoryUsageDescription</key>
-    <string>App needs access to the Downloads folder to save files.</string>
-    <key>NSDocumentsFolderUsageDescription</key>
-    <string>需要访问文档文件夹，以打开或保存文件。</string>
-    <key>NSDownloadsFolderUsageDescription</key>
-    <string>需要访问下载文件夹，以打开或保存文件。</string>
-    <key>NSDesktopFolderUsageDescription</key>
-    <string>需要访问桌面文件夹，以打开或保存文件。</string>
-    <key>com.apple.security.files.user-selected.read-write</key>
-    <true/>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+	<key>NSUserSelectedFile</key>
+	<string>Allow the user to select a file</string>
+	<key>NSDownloadsDirectoryUsageDescription</key>
+	<string>App needs access to the Downloads folder to save files.</string>
+	<key>NSDocumentsFolderUsageDescription</key>
+	<string>需要访问文档文件夹，以打开或保存文件。</string>
+	<key>NSDownloadsFolderUsageDescription</key>
+	<string>需要访问下载文件夹，以打开或保存文件。</string>
+	<key>NSDesktopFolderUsageDescription</key>
+	<string>需要访问桌面文件夹，以打开或保存文件。</string>
+	<key>com.apple.security.files.user-selected.read-write</key>
+	<true/>
+	<key>com.apple.security.network.allow-local-ports</key>
+	<true/>
+	<key>com.apple.security.network.client</key>
+	<true/>
 </dict>
 </plist>
