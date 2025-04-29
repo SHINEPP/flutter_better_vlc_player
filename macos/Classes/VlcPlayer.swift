@@ -7,7 +7,7 @@ import AppKit
 public class VlcPlayer: NSObject {
     
     private let _viewId: Int64
-    private var _view: NSView
+    private var _view: VLCVideoView
     private let options: [String]
     
     private let vlcMediaPlayer: VLCMediaPlayer
@@ -29,7 +29,8 @@ public class VlcPlayer: NSObject {
         
         self._viewId = viewId;
         self.options = options;
-        self._view = NSView(frame: CGRectZero)
+        self._view = VLCVideoView()
+        self._view.fillScreen = false
         self.vlcMediaPlayer = VLCMediaPlayer()
         self.mediaEventChannel = mediaEventChannel
         self.mediaEventChannelHandler = VLCPlayerEventStreamHandler()
@@ -342,7 +343,7 @@ public class VlcPlayer: NSObject {
         }
         
         self.vlcMediaPlayer.media = media
-        // self.vlcMediaPlayer.media.parse(withOptions: VLCMediaParsingOptions(VLCMediaParseLocal | VLCMediaFetchLocal | VLCMediaParseNetwork | VLCMediaFetchNetwork))
+        media.parse(options: [.fetchLocal, .parseNetwork, .fetchNetwork])
         self.vlcMediaPlayer.play()
         if(!autoPlay){
             self.vlcMediaPlayer.stop()

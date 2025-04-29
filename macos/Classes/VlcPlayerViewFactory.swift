@@ -16,4 +16,8 @@ public class VlcPlayerViewFactory: NSObject, FlutterPlatformViewFactory {
         let player = playerController.pickPlayer(viewId: rViewId)
         return player.view()
     }
+    
+    public func createArgsCodec() -> (any FlutterMessageCodec & NSObjectProtocol)? {
+        return FlutterStandardMessageCodec.sharedInstance()
+    }
 }

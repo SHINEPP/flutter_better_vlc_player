@@ -16,7 +16,7 @@ public class VlcPlayerController: NSObject, VlcPlayerApi {
         self.messenger = registrar.messenger
         super.init()
         
-        VlcPlayerApiSetup(messenger, self)
+        VlcPlayerApiSetup(registrar.messenger, self)
     }
     
     // pick player, must not null
