@@ -44,8 +44,15 @@ class VlcPlayerPlatformImpl extends VlcPlayerPlatform {
   Widget buildView(int viewId) {
     if (Platform.isAndroid) {
       return Texture(textureId: viewId);
-    } else if (Platform.isIOS || Platform.isMacOS) {
+    } else if (Platform.isIOS) {
       return UiKitView(
+        viewType: 'flutter_video_plugin/getVideoView',
+        hitTestBehavior: PlatformViewHitTestBehavior.transparent,
+        creationParamsCodec: const StandardMessageCodec(),
+        creationParams: {'viewId': viewId},
+      );
+    } else if (Platform.isMacOS) {
+      return AppKitView(
         viewType: 'flutter_video_plugin/getVideoView',
         hitTestBehavior: PlatformViewHitTestBehavior.transparent,
         creationParamsCodec: const StandardMessageCodec(),
