@@ -1,13 +1,13 @@
 import Foundation
-import Flutter
-import MobileVLCKit
-import UIKit
+import FlutterMacOS
+import VLCKit
+import AppKit
 
 
-public class VlcPlayer: NSObject, FlutterPlatformView {
+public class VlcPlayer: NSObject {
     
     private let _viewId: Int64
-    private var _view: UIView
+    private var _view: NSView
     private let options: [String]
     
     private let vlcMediaPlayer: VLCMediaPlayer
@@ -29,7 +29,7 @@ public class VlcPlayer: NSObject, FlutterPlatformView {
         
         self._viewId = viewId;
         self.options = options;
-        self._view = UIView(frame: CGRectZero)
+        self._view = NSView(frame: CGRectZero)
         self.vlcMediaPlayer = VLCMediaPlayer()
         self.mediaEventChannel = mediaEventChannel
         self.mediaEventChannelHandler = VLCPlayerEventStreamHandler()
@@ -48,7 +48,7 @@ public class VlcPlayer: NSObject, FlutterPlatformView {
         return self._viewId
     }
     
-    public func view() -> UIView {
+    public func view() -> NSView {
         return self._view
     }
     
@@ -106,16 +106,17 @@ public class VlcPlayer: NSObject, FlutterPlatformView {
     }
     
     public func takeSnapshot() -> String? {
-        let drawable: UIView = self.vlcMediaPlayer.drawable as! UIView
-        let size = drawable.frame.size
-        UIGraphicsBeginImageContextWithOptions(size, _: false, _: 0.0)
-        let rec = drawable.frame
-        drawable.drawHierarchy(in: rec, afterScreenUpdates: false)
-        let image = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        let byteArray = (image ?? UIImage()).pngData()
-        //
-        return byteArray?.base64EncodedString()
+        // let drawable: NSView = self.vlcMediaPlayer.drawable as! NSView
+        // let size = drawable.frame.size
+        // UIGraphicsBeginImageContextWithOptions(size, _: false, _: 0.0)
+        // let rec = drawable.frame
+        // drawable.drawHierarchy(in: rec, afterScreenUpdates: false)
+        // let image = UIGraphicsGetImageFromCurrentImageContext()
+        // UIGraphicsEndImageContext()
+        // let byteArray = (image ?? UIImage()).pngData()
+        // //
+        // return byteArray?.base64EncodedString()
+        return nil
     }
     
     public func getSpuTracksCount() -> NSNumber? {

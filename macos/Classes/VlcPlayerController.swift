@@ -1,5 +1,5 @@
 import Foundation
-import Flutter
+import FlutterMacOS
 
 public class VlcPlayerController: NSObject, VlcPlayerApi {
     
@@ -13,7 +13,7 @@ public class VlcPlayerController: NSObject, VlcPlayerApi {
     
     init(registrar: FlutterPluginRegistrar) {
         self.registrar = registrar
-        self.messenger = registrar.messenger()
+        self.messenger = registrar.messenger
         super.init()
         
         VlcPlayerApiSetup(messenger, self)

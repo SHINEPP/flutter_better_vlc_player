@@ -1,10 +1,10 @@
 import Foundation
-import Flutter
+import FlutterMacOS
 
 public class VlcPlayerPlugin: NSObject, FlutterPlugin {
         
     public static func register(with registrar: FlutterPluginRegistrar) {
-        let channel = FlutterMethodChannel(name: "flutter_video_plugin_channel", binaryMessenger: registrar.messenger())
+        let channel = FlutterMethodChannel(name: "flutter_video_plugin_channel", binaryMessenger: registrar.messenger)
         
         let plugin = VlcPlayerPlugin(registrar: registrar)
         registrar.addMethodCallDelegate(plugin, channel: channel)
