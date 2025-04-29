@@ -45,3 +45,6 @@ flutter:
         pluginClass: BetterVlcPlayerPlugin
       ios:
         pluginClass: BetterVlcPlayerPlugin
+      macos:
+        pluginClass: BetterVlcPlayerPlugin
+
