@@ -17,7 +17,7 @@ A new Flutter plugin project.
   s.source_files = 'Classes/**/*'
 
   s.dependency 'FlutterMacOS'
-  s.platform = :osx, '10.15'
+  s.platform = :osx, '10.14'
   s.dependency 'VLCKit', '~> 3.6.1b1'
   s.static_framework = true
 

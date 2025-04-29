@@ -35,13 +35,13 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/wakelock_plus/macos
 
 SPEC CHECKSUMS:
-  flutter_better_vlc_player: 659973e8367a4483f053e0e276da2f9fef364ed7
+  flutter_better_vlc_player: 0a5d9e72418456c8f2d4721a45587549384f9e90
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
   package_info_plus: 12f1c5c2cfe8727ca46cbd0b26677728972d9a5b
   screen_brightness_macos: 2d6d3af2165592d9a55ffcd95b7550970e41ebda
   VLCKit: 53782ab211b28c6d1d256541b4713724d20b2cb8
   wakelock_plus: 4783562c9a43d209c458cb9b30692134af456269
 
-PODFILE CHECKSUM: 54d867c82ac51cbd61b565781b9fada492027009
+PODFILE CHECKSUM: 7eb978b976557c8c1cd717d8185ec483fd090a82
 
 COCOAPODS: 1.16.2
