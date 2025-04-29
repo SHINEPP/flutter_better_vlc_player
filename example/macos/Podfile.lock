@@ -1,0 +1,47 @@
+PODS:
+  - flutter_better_vlc_player (0.0.1):
+    - FlutterMacOS
+    - VLCKit (~> 3.6.1b1)
+  - FlutterMacOS (1.0.0)
+  - package_info_plus (0.0.1):
+    - FlutterMacOS
+  - screen_brightness_macos (0.1.0):
+    - FlutterMacOS
+  - VLCKit (3.6.1b1)
+  - wakelock_plus (0.0.1):
+    - FlutterMacOS
+
+DEPENDENCIES:
+  - flutter_better_vlc_player (from `Flutter/ephemeral/.symlinks/plugins/flutter_better_vlc_player/macos`)
+  - FlutterMacOS (from `Flutter/ephemeral`)
+  - package_info_plus (from `Flutter/ephemeral/.symlinks/plugins/package_info_plus/macos`)
+  - screen_brightness_macos (from `Flutter/ephemeral/.symlinks/plugins/screen_brightness_macos/macos`)
+  - wakelock_plus (from `Flutter/ephemeral/.symlinks/plugins/wakelock_plus/macos`)
+
+SPEC REPOS:
+  trunk:
+    - VLCKit
+
+EXTERNAL SOURCES:
+  flutter_better_vlc_player:
+    :path: Flutter/ephemeral/.symlinks/plugins/flutter_better_vlc_player/macos
+  FlutterMacOS:
+    :path: Flutter/ephemeral
+  package_info_plus:
+    :path: Flutter/ephemeral/.symlinks/plugins/package_info_plus/macos
+  screen_brightness_macos:
+    :path: Flutter/ephemeral/.symlinks/plugins/screen_brightness_macos/macos
+  wakelock_plus:
+    :path: Flutter/ephemeral/.symlinks/plugins/wakelock_plus/macos
+
+SPEC CHECKSUMS:
+  flutter_better_vlc_player: 659973e8367a4483f053e0e276da2f9fef364ed7
+  FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
+  package_info_plus: 12f1c5c2cfe8727ca46cbd0b26677728972d9a5b
+  screen_brightness_macos: 2d6d3af2165592d9a55ffcd95b7550970e41ebda
+  VLCKit: 53782ab211b28c6d1d256541b4713724d20b2cb8
+  wakelock_plus: 4783562c9a43d209c458cb9b30692134af456269
+
+PODFILE CHECKSUM: 54d867c82ac51cbd61b565781b9fada492027009
+
+COCOAPODS: 1.16.2

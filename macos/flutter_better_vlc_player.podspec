@@ -17,8 +17,8 @@ A new Flutter plugin project.
   s.source_files = 'Classes/**/*'
 
   s.dependency 'FlutterMacOS'
-  s.platform = :osx, '10.11'
-  s.dependency 'MobileVLCKit', '~> 3.6.1b1'
+  s.platform = :osx, '10.15'
+  s.dependency 'VLCKit', '~> 3.6.1b1'
   s.static_framework = true
 
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }

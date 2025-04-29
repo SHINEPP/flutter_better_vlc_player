@@ -13,3 +13,7 @@ For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 
+
+## macos
+添加 VLC 官方源
+pod repo add vlc https://code.videolan.org/videolan/VLCKit.git
