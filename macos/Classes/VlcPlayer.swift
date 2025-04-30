@@ -30,12 +30,7 @@ public class VlcPlayer: NSObject {
         self._viewId = viewId;
         self.options = options;
         
-        let rect = NSRect(x: 0, y: 0, width: 0, height: 0)
-        self._view = VLCVideoView(frame: rect)
-        self._view.autoresizingMask = [.height, .width]
-        self._view.fillScreen = true
-        VLCLibrary.shared()
-        
+        self._view = VLCVideoView(frame: CGRectZero)
         self.vlcMediaPlayer = VLCMediaPlayer(videoView: self._view)
         self.mediaEventChannel = mediaEventChannel
         self.mediaEventChannelHandler = VLCPlayerEventStreamHandler()
@@ -321,7 +316,7 @@ public class VlcPlayer: NSObject {
             }
             media = VLCMedia(url: url)
         }
-      
+        
         if(!options.isEmpty){
             for option in options {
                 media?.addOption(option)

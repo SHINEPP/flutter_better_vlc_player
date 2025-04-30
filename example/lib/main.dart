@@ -24,7 +24,7 @@ class _MyAppState extends State<MyApp> {
           child: VideoPlayer(
             key: _key,
             controller: VlcPlayerController.network(
-              'https://media.w3.org/2010/05/sintel/trailer.mp4',
+              'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
             ),
           ),
         ),
