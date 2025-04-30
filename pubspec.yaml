@@ -2,7 +2,7 @@ name: flutter_better_vlc_player
 description: "A video player base VLC."
 version: 1.2.0
 homepage: https://github.com/SHINEPP/flutter_better_vlc_player
-publish_to: "https://pub.dartlang.org"
+publish_to: https://pub.dartlang.org
 
 environment:
   sdk: ^3.7.2
