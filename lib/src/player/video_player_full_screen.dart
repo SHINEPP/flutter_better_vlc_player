@@ -1,10 +1,8 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_better_vlc_player/flutter_better_vlc_player.dart';
 import 'package:flutter_better_vlc_player/src/player/video_player_controls.dart';
-import 'package:flutter_better_vlc_player/src/player/gesture_recognizer.dart';
 
 class VideoPlayerFullScreen extends StatefulWidget {
   const VideoPlayerFullScreen({super.key, required this.controller});

@@ -1,1 +1,4 @@
 flutter packages pub publish --server=https://pub.dartlang.org
+
+# upload package
+flutter pub publish
